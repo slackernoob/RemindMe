@@ -27,6 +27,12 @@ class TaskViewModel(private val dao: TaskDao) : ViewModel() {
             dao.delete(task)
         }
     }
+
+    fun updateTask(updatedTask: Task) {
+        viewModelScope.launch {
+            dao.update(updatedTask)
+        }
+    }
 }
 
 class TaskViewModelFactory(private val dao: TaskDao) : ViewModelProvider.Factory {

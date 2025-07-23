@@ -15,6 +15,7 @@ fun MainScreen(viewModel: TaskViewModel) {
     val tasks by viewModel.tasks.collectAsState()
     var name by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
+    var editingTask by remember { mutableStateOf<Task?>(null) }
 
     // Date picker state
     val datePickerState = rememberDatePickerState()
@@ -76,14 +77,51 @@ fun MainScreen(viewModel: TaskViewModel) {
         LazyColumn {
             items(tasks.size) { index ->
                 val task = tasks[index]
-                TaskCard(task = task, onDelete = { viewModel.deleteTask(it) })
+                TaskCard(
+                    task = task,
+                    onDelete = { viewModel.deleteTask(it) },
+                    onEdit = { editingTask = it }
+                )
             }
         }
+
+        if (editingTask != null) {
+            var editName by remember { mutableStateOf(editingTask!!.name) }
+            var editDesc by remember { mutableStateOf(editingTask!!.description ?: "") }
+            val editDateState = rememberDatePickerState(initialSelectedDateMillis = editingTask!!.dateDue.takeIf { it != -1L })
+
+            AlertDialog(
+                onDismissRequest = { editingTask = null },
+                confirmButton = {
+                    TextButton(onClick = {
+                        val newDue = editDateState.selectedDateMillis ?: -1
+                        viewModel.updateTask(editingTask!!.copy(name = editName, description = editDesc, dateDue = newDue))
+                        editingTask = null
+                    }) {
+                        Text("Save")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { editingTask = null }) {
+                        Text("Cancel")
+                    }
+                },
+                title = { Text("Edit Task") },
+                text = {
+                    Column {
+                        OutlinedTextField(value = editName, onValueChange = { editName = it }, label = { Text("Task Name") })
+                        OutlinedTextField(value = editDesc, onValueChange = { editDesc = it }, label = { Text("Description") })
+                        DatePicker(state = editDateState)
+                    }
+                }
+            )
+        }
+
     }
 }
 
 @Composable
-fun TaskCard(task: Task, onDelete: (Task) -> Unit) {
+fun TaskCard(task: Task, onDelete: (Task) -> Unit, onEdit: (Task) -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(4.dp)
     ) {
@@ -101,6 +139,15 @@ fun TaskCard(task: Task, onDelete: (Task) -> Unit) {
             Row {
                 Button(onClick = { onDelete(task) }) {
                     Text("Delete")
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Button(
+                    onClick = { onEdit(task) },
+//                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Edit")
                 }
             }
         }
