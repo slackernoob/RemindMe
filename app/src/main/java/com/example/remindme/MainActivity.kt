@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.remindme.data.TaskDatabase
 import com.example.remindme.ui.MainScreen
+import com.example.remindme.ui.screen.TaskListScreen
 import com.example.remindme.viewmodel.TaskViewModel
 import com.example.remindme.viewmodel.TaskViewModelFactory
 
@@ -18,7 +19,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val viewModel: TaskViewModel = viewModel(factory = factory)
-            MainScreen(viewModel)
+//            MainScreen(viewModel)
+            TaskListScreen(viewModel)
         }
     }
 }
