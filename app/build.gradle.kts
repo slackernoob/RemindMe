@@ -46,9 +46,12 @@ dependencies {
 
     implementation("androidx.room:room-runtime:${room_version}")
 
+    val nav_version = "2.9.2"
+
+    // Jetpack Compose integration
+    implementation("androidx.navigation:navigation-compose:$nav_version")
+
 //    // Lifecycle + ViewModel
-//    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-//    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
 
 // Coroutines + Flow

@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
 import com.example.remindme.data.TaskDatabase
 import com.example.remindme.ui.MainScreen
 import com.example.remindme.ui.screen.TaskListScreen
@@ -19,8 +20,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val viewModel: TaskViewModel = viewModel(factory = factory)
+            val navController = rememberNavController()
+            RemindMeApp(navController, viewModel)
 //            MainScreen(viewModel)
-            TaskListScreen(viewModel)
+//            TaskListScreen(viewModel)
         }
     }
 }
