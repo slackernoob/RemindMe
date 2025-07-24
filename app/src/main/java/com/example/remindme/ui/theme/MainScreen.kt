@@ -1,9 +1,11 @@
 package com.example.remindme.ui
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.remindme.data.Task
@@ -21,9 +23,24 @@ fun MainScreen(viewModel: TaskViewModel) {
     val datePickerState = rememberDatePickerState()
     var showDatePicker by remember { mutableStateOf(false) }
 
-    Column(Modifier.padding(16.dp)) {
-        OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Task Name") })
-        OutlinedTextField(value = desc, onValueChange = { desc = it }, label = { Text("Description (Optional)") })
+    Column(
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("Add Task", style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(bottom = 16.dp))
+
+        OutlinedTextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Task Name")},
+            modifier = Modifier.fillMaxWidth()
+        )
+        OutlinedTextField(
+            value = desc,
+            onValueChange = { desc = it },
+            label = { Text("Description (Optional)") },
+            modifier = Modifier.fillMaxWidth()
+        )
 
         // Date Due Button
         Button(onClick = { showDatePicker = true }, modifier = Modifier.padding(top = 8.dp)) {
@@ -67,89 +84,91 @@ fun MainScreen(viewModel: TaskViewModel) {
                     showDatePicker = false
                 }
             },
-            modifier = Modifier.padding(top = 8.dp)
+//            modifier = Modifier.padding(top = 8.dp)
         ) {
             Text("Add Task")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-
-        LazyColumn {
-            items(tasks.size) { index ->
-                val task = tasks[index]
-                TaskCard(
-                    task = task,
-                    onDelete = { viewModel.deleteTask(it) },
-                    onEdit = { editingTask = it }
-                )
-            }
-        }
-
-        if (editingTask != null) {
-            var editName by remember { mutableStateOf(editingTask!!.name) }
-            var editDesc by remember { mutableStateOf(editingTask!!.description ?: "") }
-            val editDateState = rememberDatePickerState(initialSelectedDateMillis = editingTask!!.dateDue.takeIf { it != -1L })
-
-            AlertDialog(
-                onDismissRequest = { editingTask = null },
-                confirmButton = {
-                    TextButton(onClick = {
-                        val newDue = editDateState.selectedDateMillis ?: -1
-                        viewModel.updateTask(editingTask!!.copy(name = editName, description = editDesc, dateDue = newDue))
-                        editingTask = null
-                    }) {
-                        Text("Save")
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { editingTask = null }) {
-                        Text("Cancel")
-                    }
-                },
-                title = { Text("Edit Task") },
-                text = {
-                    Column {
-                        OutlinedTextField(value = editName, onValueChange = { editName = it }, label = { Text("Task Name") })
-                        OutlinedTextField(value = editDesc, onValueChange = { editDesc = it }, label = { Text("Description") })
-                        DatePicker(state = editDateState)
-                    }
-                }
-            )
-        }
-
     }
 }
-
-@Composable
-fun TaskCard(task: Task, onDelete: (Task) -> Unit, onEdit: (Task) -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth().padding(4.dp)
-    ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            Text(task.name, style = MaterialTheme.typography.titleMedium)
-            Text(task.description ?: " ", style = MaterialTheme.typography.bodyMedium)
-
-            val formattedDate = if (task.dateDue != -1L) {
-                java.text.SimpleDateFormat("EEE, dd MMM yyyy", java.util.Locale.getDefault()).format(java.util.Date(task.dateDue))
-            } else {
-                "No due date set"
-            }
-
-            Text(formattedDate, style = MaterialTheme.typography.bodyMedium)
-            Row {
-                Button(onClick = { onDelete(task) }) {
-                    Text("Delete")
-                }
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Button(
-                    onClick = { onEdit(task) },
-//                    modifier = Modifier.weight(1f)
-                ) {
-                    Text("Edit")
-                }
-            }
-        }
-    }
-}
+//
+//        LazyColumn {
+//            items(tasks.size) { index ->
+//                val task = tasks[index]
+//                TaskCard(
+//                    task = task,
+//                    onDelete = { viewModel.deleteTask(it) },
+//                    onEdit = { editingTask = it }
+//                )
+//            }
+//        }
+//
+//        if (editingTask != null) {
+//            var editName by remember { mutableStateOf(editingTask!!.name) }
+//            var editDesc by remember { mutableStateOf(editingTask!!.description ?: "") }
+//            val editDateState = rememberDatePickerState(initialSelectedDateMillis = editingTask!!.dateDue.takeIf { it != -1L })
+//
+//            AlertDialog(
+//                onDismissRequest = { editingTask = null },
+//                confirmButton = {
+//                    TextButton(onClick = {
+//                        val newDue = editDateState.selectedDateMillis ?: -1
+//                        viewModel.updateTask(editingTask!!.copy(name = editName, description = editDesc, dateDue = newDue))
+//                        editingTask = null
+//                    }) {
+//                        Text("Save")
+//                    }
+//                },
+//                dismissButton = {
+//                    TextButton(onClick = { editingTask = null }) {
+//                        Text("Cancel")
+//                    }
+//                },
+//                title = { Text("Edit Task") },
+//                text = {
+//                    Column {
+//                        OutlinedTextField(value = editName, onValueChange = { editName = it }, label = { Text("Task Name") })
+//                        OutlinedTextField(value = editDesc, onValueChange = { editDesc = it }, label = { Text("Description") })
+//                        DatePicker(state = editDateState)
+//                    }
+//                }
+//            )
+//        }
+//
+//    }
+//}
+//
+//@Composable
+//fun TaskCard(task: Task, onDelete: (Task) -> Unit, onEdit: (Task) -> Unit) {
+//    Card(
+//        modifier = Modifier.fillMaxWidth().padding(4.dp)
+//    ) {
+//        Column(modifier = Modifier.padding(8.dp)) {
+//            Text(task.name, style = MaterialTheme.typography.titleMedium)
+//            Text(task.description ?: " ", style = MaterialTheme.typography.bodyMedium)
+//
+//            val formattedDate = if (task.dateDue != -1L) {
+//                java.text.SimpleDateFormat("EEE, dd MMM yyyy", java.util.Locale.getDefault()).format(java.util.Date(task.dateDue))
+//            } else {
+//                "No due date set"
+//            }
+//
+//            Text(formattedDate, style = MaterialTheme.typography.bodyMedium)
+//            Row {
+//                Button(onClick = { onDelete(task) }) {
+//                    Text("Delete")
+//                }
+//
+//                Spacer(modifier = Modifier.width(8.dp))
+//
+//                Button(
+//                    onClick = { onEdit(task) },
+////                    modifier = Modifier.weight(1f)
+//                ) {
+//                    Text("Edit")
+//                }
+//            }
+//        }
+//    }
+//}

@@ -41,7 +41,7 @@ fun TaskListScreen(viewModel: TaskViewModel) {
     var editingTask by remember { mutableStateOf<Task?>(null) }
 
     Column(modifier = Modifier.padding(16.dp)) {
-        Text("All Tasks", style = MaterialTheme.typography.headlineSmall, modifier = Modifier.padding(bottom = 16.dp))
+        Text("All Tasks", style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(bottom = 16.dp))
 
         LazyColumn {
             items(tasks.size) { index ->
