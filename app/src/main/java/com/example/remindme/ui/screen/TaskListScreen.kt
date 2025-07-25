@@ -97,8 +97,14 @@ fun TaskCard(task: Task, onDelete: (Task) -> Unit, onEdit: (Task) -> Unit) {
             Text(task.name, style = MaterialTheme.typography.titleMedium)
             Text(task.description ?: " ", style = MaterialTheme.typography.bodyMedium)
 
+//            val formattedDate = if (task.dateDue != -1L) {
+//                java.text.SimpleDateFormat("EEE, dd MMM yyyy", java.util.Locale.getDefault()).format(java.util.Date(task.dateDue))
+//            } else {
+//                "No due date set"
+//            }
+
             val formattedDate = if (task.dateDue != -1L) {
-                java.text.SimpleDateFormat("EEE, dd MMM yyyy", java.util.Locale.getDefault()).format(java.util.Date(task.dateDue))
+                "Date due: ${java.text.SimpleDateFormat("EEE, dd MMM yyyy", java.util.Locale.getDefault()).format(java.util.Date(task.dateDue))}"
             } else {
                 "No due date set"
             }
