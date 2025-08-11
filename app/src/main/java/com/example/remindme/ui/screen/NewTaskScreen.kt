@@ -6,16 +6,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.remindme.data.Task
 import com.example.remindme.viewmodel.TaskViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(viewModel: TaskViewModel) {
-    val tasks by viewModel.tasks.collectAsState()
+//    val tasks by viewModel.tasks.collectAsState()
     var name by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
-    var editingTask by remember { mutableStateOf<Task?>(null) }
+//    var editingTask by remember { mutableStateOf<Task?>(null) }
 
     // Date picker state
     val datePickerState = rememberDatePickerState()
@@ -40,12 +39,12 @@ fun MainScreen(viewModel: TaskViewModel) {
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Date Due Button
+        // Button to select due date
         Button(onClick = { showDatePicker = true }, modifier = Modifier.padding(top = 8.dp)) {
             Text("Select Due Date")
         }
 
-        // Show selected date text
+        // Show selected date
         datePickerState.selectedDateMillis?.let {
             val formatted = java.text.SimpleDateFormat("EEE, dd MMM yyyy").format(it)
             Text("Due Date: $formatted", style = MaterialTheme.typography.bodyMedium)
@@ -82,7 +81,6 @@ fun MainScreen(viewModel: TaskViewModel) {
                     showDatePicker = false
                 }
             },
-//            modifier = Modifier.padding(top = 8.dp)
         ) {
             Text("Add Task")
         }
@@ -90,83 +88,3 @@ fun MainScreen(viewModel: TaskViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
-//
-//        LazyColumn {
-//            items(tasks.size) { index ->
-//                val task = tasks[index]
-//                TaskCard(
-//                    task = task,
-//                    onDelete = { viewModel.deleteTask(it) },
-//                    onEdit = { editingTask = it }
-//                )
-//            }
-//        }
-//
-//        if (editingTask != null) {
-//            var editName by remember { mutableStateOf(editingTask!!.name) }
-//            var editDesc by remember { mutableStateOf(editingTask!!.description ?: "") }
-//            val editDateState = rememberDatePickerState(initialSelectedDateMillis = editingTask!!.dateDue.takeIf { it != -1L })
-//
-//            AlertDialog(
-//                onDismissRequest = { editingTask = null },
-//                confirmButton = {
-//                    TextButton(onClick = {
-//                        val newDue = editDateState.selectedDateMillis ?: -1
-//                        viewModel.updateTask(editingTask!!.copy(name = editName, description = editDesc, dateDue = newDue))
-//                        editingTask = null
-//                    }) {
-//                        Text("Save")
-//                    }
-//                },
-//                dismissButton = {
-//                    TextButton(onClick = { editingTask = null }) {
-//                        Text("Cancel")
-//                    }
-//                },
-//                title = { Text("Edit Task") },
-//                text = {
-//                    Column {
-//                        OutlinedTextField(value = editName, onValueChange = { editName = it }, label = { Text("Task Name") })
-//                        OutlinedTextField(value = editDesc, onValueChange = { editDesc = it }, label = { Text("Description") })
-//                        DatePicker(state = editDateState)
-//                    }
-//                }
-//            )
-//        }
-//
-//    }
-//}
-//
-//@Composable
-//fun TaskCard(task: Task, onDelete: (Task) -> Unit, onEdit: (Task) -> Unit) {
-//    Card(
-//        modifier = Modifier.fillMaxWidth().padding(4.dp)
-//    ) {
-//        Column(modifier = Modifier.padding(8.dp)) {
-//            Text(task.name, style = MaterialTheme.typography.titleMedium)
-//            Text(task.description ?: " ", style = MaterialTheme.typography.bodyMedium)
-//
-//            val formattedDate = if (task.dateDue != -1L) {
-//                java.text.SimpleDateFormat("EEE, dd MMM yyyy", java.util.Locale.getDefault()).format(java.util.Date(task.dateDue))
-//            } else {
-//                "No due date set"
-//            }
-//
-//            Text(formattedDate, style = MaterialTheme.typography.bodyMedium)
-//            Row {
-//                Button(onClick = { onDelete(task) }) {
-//                    Text("Delete")
-//                }
-//
-//                Spacer(modifier = Modifier.width(8.dp))
-//
-//                Button(
-//                    onClick = { onEdit(task) },
-////                    modifier = Modifier.weight(1f)
-//                ) {
-//                    Text("Edit")
-//                }
-//            }
-//        }
-//    }
-//}
