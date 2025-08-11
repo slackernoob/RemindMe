@@ -11,10 +11,8 @@ import com.example.remindme.viewmodel.TaskViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(viewModel: TaskViewModel) {
-//    val tasks by viewModel.tasks.collectAsState()
     var name by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
-//    var editingTask by remember { mutableStateOf<Task?>(null) }
 
     // Date picker state
     val datePickerState = rememberDatePickerState()
