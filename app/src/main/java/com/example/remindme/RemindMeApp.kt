@@ -13,12 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.remindme.ui.MainScreen
-import com.example.remindme.ui.view.OverviewScreen
-import com.example.remindme.ui.view.TaskListScreen
+import com.example.remindme.navigation.NavGraph
 import com.example.remindme.viewmodel.TaskViewModel
 
 
@@ -48,35 +44,12 @@ fun RemindMeApp(navController: NavHostController, viewModel: TaskViewModel) {
                 }
             }
         }
-    ) { padding ->
-        NavHost( // Navigation graph in Compose form
+    ) { innerPadding ->
+        NavGraph(
             navController = navController,
-            startDestination = "main",
-            modifier = Modifier.padding(padding)
-        ) {
-            // Each composable() call is a screen ->
-            // No fragments or XML involved as screens are just Composables
-            composable("main") {
-                MainScreen(
-                    viewModel,
-                    onGoToList = { navController.navigate("list") },
-                    onGoToOverview = { navController.navigate("overview") }
-                )
-            }
-            composable("list") {
-                TaskListScreen(
-                    viewModel,
-                    onGoToMain = { navController.navigate("main") },
-                    onGoToOverview = { navController.navigate("overview") }
-                )
-            }
-            composable("overview") {
-                OverviewScreen(
-                    viewModel,
-                    onGoToList = { navController.navigate("list") },
-                    onGoToMain = { navController.navigate("main") }
-                )
-            }
-        }
+            viewModel = viewModel,
+            modifier = Modifier.padding(innerPadding)
+//            modifier = Modifier
+        )
     }
 }
