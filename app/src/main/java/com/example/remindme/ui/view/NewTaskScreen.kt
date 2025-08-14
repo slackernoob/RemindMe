@@ -10,7 +10,7 @@ import com.example.remindme.viewmodel.TaskViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(viewModel: TaskViewModel) {
+fun MainScreen(viewModel: TaskViewModel, onGoToList: () -> Unit, onGoToOverview: () -> Unit) {
     var name by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
 
@@ -81,6 +81,12 @@ fun MainScreen(viewModel: TaskViewModel) {
             },
         ) {
             Text("Add Task")
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Button(onClick = onGoToOverview) {
+            Text("Go to Overview")
         }
 
         Spacer(modifier = Modifier.height(16.dp))

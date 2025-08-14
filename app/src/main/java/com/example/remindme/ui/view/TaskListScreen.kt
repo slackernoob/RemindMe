@@ -32,7 +32,7 @@ import com.example.remindme.viewmodel.TaskViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskListScreen(viewModel: TaskViewModel) {
+fun TaskListScreen(viewModel: TaskViewModel, onGoToMain: () -> Unit, onGoToOverview: () -> Unit) {
     val tasks by viewModel.tasks.collectAsState()
     var editingTask by remember { mutableStateOf<Task?>(null) }
 
