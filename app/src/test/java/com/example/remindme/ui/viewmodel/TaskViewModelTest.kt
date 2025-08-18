@@ -6,36 +6,40 @@ import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.junit.Assert.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TaskViewModelTest {
 
+    // Test dispatcher instead of Android's Main thread
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var dao: TaskDao
     private lateinit var viewModel: TaskViewModel
 
     @Before
     fun setup() {
-        // Override Main dispatcher
+        // Override Main dispatcher with a test dispatcher
         Dispatchers.setMain(testDispatcher)
 
-        dao = mockk()
+        dao = mockk(relaxed = true) // ignores unstubbed calls
         every { dao.getAllTasks() } returns flowOf(emptyList())
 
         viewModel = TaskViewModel(dao)
     }
 
+    // Prevent unexpected errors for other tests, aka "test pollution"
     @After
     fun tearDown() {
-        Dispatchers.resetMain() // reset Main dispatcher
+        Dispatchers.resetMain() // reset back to Android Main dispatcher
     }
 
     @Test
-    fun `addTask calls dao insert`() = runTest(testDispatcher) {
+    fun addTask_should_call_dao_insert() = runTest(testDispatcher) {
         val taskName = "Test Task"
         val taskDesc = "Description"
         val dateDue = 123456789L
@@ -45,7 +49,7 @@ class TaskViewModelTest {
 
         viewModel.addTask(taskName, taskDesc, dateDue, timeDue)
 
-        // Advance until all coroutines finish
+        // Wait until task has been added
         testScheduler.advanceUntilIdle()
 
         coVerify { dao.insert(match {
@@ -55,7 +59,7 @@ class TaskViewModelTest {
     }
 
     @Test
-    fun `deleteTask calls dao delete`() = runTest(testDispatcher) {
+    fun deleteTask_should_call_dao_delete() = runTest(testDispatcher) {
         val task = Task(name = "Test", dateDue = 123L)
         coEvery { dao.delete(any()) } just Runs
 
@@ -66,7 +70,7 @@ class TaskViewModelTest {
     }
 
     @Test
-    fun `updateTask calls dao update`() = runTest(testDispatcher) {
+    fun updateTask_should_call_dao_update() = runTest(testDispatcher) {
         val task = Task(name = "Update", dateDue = 456L)
         coEvery { dao.update(any()) } just Runs
 
@@ -74,5 +78,30 @@ class TaskViewModelTest {
         testScheduler.advanceUntilIdle()
 
         coVerify { dao.update(task) }
+    }
+
+    @Test
+    fun getAllTasks_should_return_flow_of_tasks() = runTest(testDispatcher) {
+        val fakeTasks = listOf(
+            Task(id = 1, name = "Task 1", dateDue = 123L, timeDue = null),
+            Task(id = 2, name = "Task 2", dateDue = 456L)
+        )
+        every { dao.getAllTasks() } returns flowOf(fakeTasks)
+
+        // Re-initialize viewModel in order to pick up new mocked flow
+        viewModel = TaskViewModel(dao)
+
+//        val result = mutableListOf<List<Task>>()
+//
+//        val job = launch {viewModel.tasks.collect { result.add(it)}}
+//        testScheduler.advanceUntilIdle()
+//        assertEquals(fakeTasks, result.last())
+
+        var result : List<Task>? = null
+        val job = launch {viewModel.tasks.collect { result = it}}
+        testScheduler.advanceUntilIdle()
+        assertEquals(fakeTasks, result)
+
+        job.cancel()
     }
 }
