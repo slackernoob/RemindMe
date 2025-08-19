@@ -39,6 +39,14 @@ android {
     buildFeatures {
         compose = true
     }
+    packaging {
+        resources {
+            excludes += setOf(
+                "META-INF/LICENSE.md",
+                "META-INF/LICENSE-notice.md"
+            )
+        }
+    }
 }
 
 dependencies {
@@ -75,6 +83,8 @@ dependencies {
     testImplementation(libs.junit)
     // Coroutine testing
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+
+    androidTestImplementation("io.mockk:mockk-android:1.13.11")
 
 
     androidTestImplementation(libs.androidx.junit)

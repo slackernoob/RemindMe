@@ -26,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.example.remindme.data.Task
 import com.example.remindme.viewmodel.TaskViewModel
@@ -83,7 +84,8 @@ fun TaskListScreen(viewModel: TaskViewModel, onGoToMain: () -> Unit, onGoToOverv
                         OutlinedTextField(
                             value = editName,
                             onValueChange = { editName = it },
-                            label = { Text("Task Name") }
+                            label = { Text("Task Name") },
+                            modifier = Modifier.testTag("Task Name")
                         )
                         OutlinedTextField(
                             value = editDesc,
@@ -96,8 +98,10 @@ fun TaskListScreen(viewModel: TaskViewModel, onGoToMain: () -> Unit, onGoToOverv
                         Text(
                             text = editDateState.selectedDateMillis?.let { millis ->
                                 "(Press to Edit) Due Date: ${java.text.SimpleDateFormat("yyyy-MM-dd").format(millis)}"
-                            } ?: "No Due Date",
-                            modifier = Modifier.clickable { showDatePicker = true }
+                            } ?: "(Press to Edit) No Due Date",
+                            modifier = Modifier
+                                .clickable { showDatePicker = true }
+                                .testTag("Date Picker")
                         )
                     }
                 }
