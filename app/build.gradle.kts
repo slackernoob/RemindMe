@@ -2,8 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-
-    alias(libs.plugins.ksp) // still not sure what this KSP thing is for
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.ksp) // Kotlin Symbol Processing (for annotation processors like Room/Hilt)
 }
 
 android {
@@ -50,47 +50,47 @@ android {
 }
 
 dependencies {
-    val room_version = "2.7.2"
-
-    implementation("androidx.room:room-runtime:${room_version}")
-
-    val nav_version = "2.9.2"
-
-    // Jetpack Compose integration
-    implementation("androidx.navigation:navigation-compose:$nav_version")
-
-//    // Lifecycle + ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
-
-// Coroutines + Flow
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-
-    // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
-    // See Add the KSP plugin to your project
-    ksp("androidx.room:room-compiler:$room_version")
-
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
+    // Jetpack Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.navigation.compose)
 
-    // For JVM unit tests
-    testImplementation("io.mockk:mockk:1.13.11")
+    // Lifecycle + ViewModel
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    // Kotlin Coroutines + Flow
+    implementation(libs.kotlinx.coroutines.android)
+
+    // Room database
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+
+    // Hilt Dependency Injection
+    implementation(libs.dagger.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    // Core Android KTX
+    implementation(libs.androidx.core.ktx)
+
+    // Testing - Unit Tests
     testImplementation(libs.junit)
-    // Coroutine testing
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
 
-    androidTestImplementation("io.mockk:mockk-android:1.13.11")
-
-
+    // Testing - Instrumented/Android Tests
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.mockk.android)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
+    // Debug
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
