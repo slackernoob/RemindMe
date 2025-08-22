@@ -2,6 +2,7 @@ package com.example.remindme.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,9 +14,11 @@ import com.example.remindme.viewmodel.TaskViewModel
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    viewModel: TaskViewModel,
+//    viewModel: TaskViewModel,
     modifier: Modifier = Modifier
 ) {
+    val viewModel: TaskViewModel = hiltViewModel()
+
     NavHost(
         navController = navController,
         startDestination = "main",

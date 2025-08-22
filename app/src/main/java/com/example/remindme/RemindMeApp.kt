@@ -47,7 +47,7 @@ fun RemindMeApp(navController: NavHostController, viewModel: TaskViewModel) {
     ) { innerPadding ->
         NavGraph(
             navController = navController,
-            viewModel = viewModel,
+//            viewModel = viewModel,
             modifier = Modifier.padding(innerPadding)
 //            modifier = Modifier
         )

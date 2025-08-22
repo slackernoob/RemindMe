@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
+    id("kotlin-kapt")
     alias(libs.plugins.ksp) // Kotlin Symbol Processing (for annotation processors like Room/Hilt)
 }
 
@@ -17,7 +18,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.example.remindme.HiltTestRunner"
     }
 
     buildTypes {
@@ -72,7 +73,7 @@ dependencies {
 
     // Hilt Dependency Injection
     implementation(libs.dagger.hilt.android)
-    ksp(libs.hilt.android.compiler)
+    kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
     // Core Android KTX
@@ -89,6 +90,8 @@ dependencies {
     androidTestImplementation(libs.mockk.android)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.hilt.android.testing)
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.56.2")
 
     // Debug
     debugImplementation(libs.androidx.ui.tooling)

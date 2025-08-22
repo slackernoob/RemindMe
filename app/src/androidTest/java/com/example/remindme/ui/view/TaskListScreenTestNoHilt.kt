@@ -1,24 +1,15 @@
 package com.example.remindme.ui.view
 
-import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.remindme.data.Task
-import com.example.remindme.data.TaskDao
-import com.example.remindme.di.DatabaseModule
 import com.example.remindme.viewmodel.TaskViewModel
-import dagger.hilt.android.testing.BindValue
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -33,31 +24,20 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@HiltAndroidTest
-@UninstallModules(DatabaseModule::class)
 @RunWith(AndroidJUnit4::class)
-class TaskListScreenTest {
+class TaskListScreenTestNoHilt {
 
-    @get:Rule(order = 0)
-    val hiltRule = HiltAndroidRule(this)
-    @get:Rule(order = 1)
-    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
-    val test = createComposeRule()
+    @get:Rule
+    val composeTestRule = createComposeRule()
 
-    @BindValue
-    @JvmField
-    val fakeTaskDao: TaskDao = mockk(relaxed = true)
-
-//    private lateinit var viewModel: TaskViewModel
+    private lateinit var viewModel: TaskViewModel
 
     private val fakeTasksFlow = MutableStateFlow<List<Task>>(emptyList())
 
     @Before
     fun setup() {
-        hiltRule.inject()
-//        viewModel = mockk(relaxed = true)
-        every { fakeTaskDao.getAllTasks() } returns fakeTasksFlow
-//        every { viewModel.tasks } returns fakeTasksFlow
+        viewModel = mockk(relaxed = true)
+        every { viewModel.tasks } returns fakeTasksFlow
     }
 
     // Test that all the tasks are able to be displayed correctly
@@ -69,7 +49,7 @@ class TaskListScreenTest {
         )
 //        fakeTasksFlow.value = fakeTasks
 
-        every { fakeTaskDao.getAllTasks() } returns flowOf(fakeTasks).stateIn(
+        every { viewModel.tasks } returns flowOf(fakeTasks).stateIn(
             scope = CoroutineScope(Dispatchers.Unconfined),
             started = SharingStarted.Eagerly,
             initialValue = emptyList()
@@ -77,6 +57,7 @@ class TaskListScreenTest {
 
         composeTestRule.setContent {
             TaskListScreen(
+                viewModel,
                 onGoToMain = { },
                 onGoToOverview = { }
             )
@@ -102,12 +83,12 @@ class TaskListScreenTest {
 //        )
 
         composeTestRule.setContent {
-            TaskListScreen(onGoToMain = {}, onGoToOverview = {})
+            TaskListScreen(viewModel, {}, {})
         }
 
         composeTestRule.onNodeWithText("Delete").performClick()
 
-        coVerify { fakeTaskDao.delete(task) }
+        coVerify { viewModel.deleteTask(task) }
     }
 
     // Test edit button opens edit dialog, and clicking date opens date picker dialog
@@ -118,14 +99,14 @@ class TaskListScreenTest {
         val task = Task(id = 1, name = "Task 1", dateDue = 123L, timeDue = null)
         fakeTasksFlow.value = listOf(task)
 
-        every { fakeTaskDao.getAllTasks() } returns flowOf(listOf(task)).stateIn(
+        every { viewModel.tasks } returns flowOf(listOf(task)).stateIn(
             scope = CoroutineScope(Dispatchers.Unconfined),
             started = SharingStarted.Eagerly,
             initialValue = emptyList()
         )
 
         composeTestRule.setContent {
-            TaskListScreen(onGoToMain = {}, onGoToOverview = {})
+            TaskListScreen(viewModel, {}, {})
         }
 
         composeTestRule.onNodeWithText("Edit").performClick()
@@ -143,14 +124,14 @@ class TaskListScreenTest {
         val task = Task(id = 1, name = "Task 1", dateDue = 123L, timeDue = null)
         fakeTasksFlow.value = listOf(task)
 
-        every { fakeTaskDao.getAllTasks() } returns flowOf(listOf(task)).stateIn(
+        every { viewModel.tasks } returns flowOf(listOf(task)).stateIn(
             scope = CoroutineScope(Dispatchers.Unconfined),
             started = SharingStarted.Eagerly,
             initialValue = emptyList()
         )
 
         composeTestRule.setContent {
-            TaskListScreen(onGoToOverview = {}, onGoToMain = {})
+            TaskListScreen(viewModel, {}, {})
         }
 
         composeTestRule.onNodeWithText("Edit").performClick()
@@ -159,7 +140,7 @@ class TaskListScreenTest {
         composeTestRule.onNodeWithText("Save").performClick()
 
         coVerify {
-            fakeTaskDao.update(match { it.name == "Updated task"})
+            viewModel.updateTask(match { it.name == "Updated task"})
         }
     }
 

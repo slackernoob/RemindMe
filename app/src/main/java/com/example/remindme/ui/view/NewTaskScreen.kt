@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.example.remindme.viewmodel.TaskViewModel
 
@@ -45,7 +46,9 @@ fun MainScreen(viewModel: TaskViewModel, onGoToList: () -> Unit, onGoToOverview:
             value = name,
             onValueChange = { name = it },
             label = { Text("Task Name")},
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("Task Name Field")
         )
         OutlinedTextField(
             value = desc,
@@ -86,6 +89,7 @@ fun MainScreen(viewModel: TaskViewModel, onGoToList: () -> Unit, onGoToOverview:
 
         // Add Task Button
         Button(
+            modifier = Modifier.testTag("Add Task Button"),
             onClick = {
                 if (name.isNotBlank()) {
                     val due = datePickerState.selectedDateMillis ?: -1 // handle -1

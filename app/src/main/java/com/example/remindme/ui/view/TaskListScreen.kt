@@ -28,12 +28,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.remindme.data.Task
 import com.example.remindme.viewmodel.TaskViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskListScreen(viewModel: TaskViewModel, onGoToMain: () -> Unit, onGoToOverview: () -> Unit) {
+fun TaskListScreen(viewModel: TaskViewModel = hiltViewModel(), onGoToMain: () -> Unit, onGoToOverview: () -> Unit) {
     val tasks by viewModel.tasks.collectAsState()
     var editingTask by remember { mutableStateOf<Task?>(null) }
 
