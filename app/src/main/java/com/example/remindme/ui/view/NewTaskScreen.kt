@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -28,19 +29,28 @@ import com.example.remindme.viewmodel.TaskViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(viewModel: TaskViewModel, onGoToList: () -> Unit, onGoToOverview: () -> Unit) {
+fun NewTaskScreen(
+    viewModel: TaskViewModel,
+    onGoToList: () -> Unit,
+    onGoToOverview: () -> Unit,
+    datePickerState: DatePickerState = rememberDatePickerState()
+) {
     var name by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
 
     // Date picker state
-    val datePickerState = rememberDatePickerState()
+//    val datePickerState = rememberDatePickerState()
     var showDatePicker by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Add Task", style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(bottom = 16.dp))
+        Text("Add Task",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+        )
 
         OutlinedTextField(
             value = name,
@@ -54,11 +64,18 @@ fun MainScreen(viewModel: TaskViewModel, onGoToList: () -> Unit, onGoToOverview:
             value = desc,
             onValueChange = { desc = it },
             label = { Text("Description (Optional)") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("Description Field")
         )
 
         // Button to select due date
-        Button(onClick = { showDatePicker = true }, modifier = Modifier.padding(top = 8.dp)) {
+        Button(
+            onClick = { showDatePicker = true },
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .testTag("Select Due Date Button")
+        ) {
             Text("Select Due Date")
         }
 
@@ -81,7 +98,8 @@ fun MainScreen(viewModel: TaskViewModel, onGoToList: () -> Unit, onGoToOverview:
                     TextButton(onClick = { showDatePicker = false }) {
                         Text("Cancel")
                     }
-                }
+                },
+                modifier = Modifier.testTag("Date Picker")
             ) {
                 DatePicker(state = datePickerState)
             }
@@ -94,7 +112,7 @@ fun MainScreen(viewModel: TaskViewModel, onGoToList: () -> Unit, onGoToOverview:
                 if (name.isNotBlank()) {
                     val due = datePickerState.selectedDateMillis ?: -1 // handle -1
                     val now = System.currentTimeMillis()
-                    viewModel.addTask(name, desc, dateDue = due, timeDue = now + 3_600_000) // dummy due in 1 day, reminder in 1 hour
+                    viewModel.addTask(name, desc, dateDue = due, timeDue = due - 3_600_000) // dummy due in 1 day, reminder in 1 hour
                     name = ""
                     desc = ""
                     showDatePicker = false

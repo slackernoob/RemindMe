@@ -1,11 +1,13 @@
-package com.example.remindme.ui.view
+package com.example.remindme
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onChildAt
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.remindme.MainActivity
 import com.example.remindme.data.Task
 import com.example.remindme.data.TaskDao
 import com.example.remindme.di.DatabaseModule
@@ -58,5 +60,21 @@ class TaskListScreenTestBasic {
         composeTestRule.onNodeWithTag("Task Name Field").performTextInput("New task")
         composeTestRule.onNodeWithTag("Add Task Button").performClick()
         coVerify { fakeTaskDao.insert(match { it.name == "New task" }) }
+
+        // Navigate to TaskListScreen
+        composeTestRule.onNodeWithText("Tasks").performClick()
+        composeTestRule.onNodeWithText("Edit").performClick()
+        composeTestRule.onNodeWithTag("Task Name").performTextClearance()
+        composeTestRule.onNodeWithTag("Task Name").performTextInput("Updated task")
+        composeTestRule.onNodeWithText("Description").performTextInput("Updated desc")
+        composeTestRule.onNodeWithText("Save").performClick()
+        coVerify {
+            fakeTaskDao.update(
+                match { it.name == "Updated task" && it.description == "Updated desc" }
+            )
+        }
+        composeTestRule.onNodeWithText("Delete").onChildAt(2).performClick()
+        coVerify { fakeTaskDao.delete(any()) }
+
     }
 }

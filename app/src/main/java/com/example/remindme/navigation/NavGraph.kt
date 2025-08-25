@@ -1,16 +1,18 @@
 package com.example.remindme.navigation
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.remindme.ui.MainScreen
+import com.example.remindme.ui.NewTaskScreen
 import com.example.remindme.ui.view.OverviewScreen
 import com.example.remindme.ui.view.TaskListScreen
 import com.example.remindme.viewmodel.TaskViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavGraph(
     navController: NavHostController,
@@ -25,7 +27,7 @@ fun NavGraph(
         modifier = modifier
     ) {
         composable("main") {
-            MainScreen(
+            NewTaskScreen(
                 viewModel,
                 onGoToList = { navController.navigate("list") },
                 onGoToOverview = { navController.navigate("overview") }
