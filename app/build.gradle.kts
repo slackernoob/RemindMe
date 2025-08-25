@@ -135,7 +135,6 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         fileTree(layout.buildDirectory.get().asFile) {
             include(
                 "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
-//                "outputs/code_coverage/debugAndroidTest/connected/Pixel_4_API_31(AVD) - 12/coverage.ec",
                 "outputs/code_coverage/debugAndroidTest/connected/**/coverage.ec"
             )
         }

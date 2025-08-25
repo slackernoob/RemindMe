@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.remindme.navigation.NavGraph
@@ -34,12 +35,17 @@ fun RemindMeApp(navController: NavHostController, viewModel: TaskViewModel) {
                         "Tasks" -> Icons.AutoMirrored.Filled.List
                         else -> Icons.AutoMirrored.Filled.List
                     }
+                    val testTag = when (label) {
+                        "Tasks" -> "Navigation Bar Tasks"
+                        else -> "Navigation Bar New Task"
+                    }
 
                     NavigationBarItem(
                         selected = currentRoute == routes[index],
                         onClick = { navController.navigate(routes[index]) }, // Navigate to selected route
                         label = { Text(label) },
-                        icon = { Icon(icon, contentDescription = label) }
+                        icon = { Icon(icon, contentDescription = label) },
+                        modifier = Modifier.testTag(testTag)
                     )
                 }
             }
@@ -47,9 +53,7 @@ fun RemindMeApp(navController: NavHostController, viewModel: TaskViewModel) {
     ) { innerPadding ->
         NavGraph(
             navController = navController,
-//            viewModel = viewModel,
             modifier = Modifier.padding(innerPadding)
-//            modifier = Modifier
         )
     }
 }
