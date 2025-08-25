@@ -120,17 +120,24 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/BuildConfig.*",
         "**/Manifest*.*",
         "**/*Test*.*",
-        "android/**/*.*"
+        "android/**/*.*",
+        "**/*\$*Companion*",
+        "**/*\$*Lambda*",
+        "**/*\$*Impl*",
+        "**/ui/theme/**" // optional if you don’t care about theme coverage
     )
+    val debugTree = fileTree("${layout.buildDirectory.get().asFile}/intermediates/javac/debug") {
+        exclude(fileFilter)
+    }
 
-    val debugTree = fileTree("${layout.buildDirectory.get().asFile}/tmp/kotlin-classes/debug") {
+    val kotlinDebugTree = fileTree("${layout.buildDirectory.get().asFile}/tmp/kotlin-classes/debug") {
         exclude(fileFilter)
     }
 
     val mainSrc = "$projectDir/src/main/java"
 
     sourceDirectories.setFrom(files(mainSrc))
-    classDirectories.setFrom(files(debugTree))
+    classDirectories.setFrom(files(debugTree, kotlinDebugTree))
     executionData.setFrom(
         fileTree(layout.buildDirectory.get().asFile) {
             include(
