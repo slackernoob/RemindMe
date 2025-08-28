@@ -1,4 +1,4 @@
-package com.example.remindme.ui
+package com.example.remindme.ui.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.example.remindme.viewmodel.TaskViewModel
+import java.text.SimpleDateFormat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,7 +38,7 @@ fun NewTaskScreen(
 ) {
     var name by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
-
+    var showWarning by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
 
     Column(
@@ -79,7 +81,7 @@ fun NewTaskScreen(
 
         // Show selected date
         datePickerState.selectedDateMillis?.let {
-            val formatted = java.text.SimpleDateFormat("EEE, dd MMM yyyy").format(it)
+            val formatted = SimpleDateFormat("EEE, dd MMM yyyy").format(it)
             Text("Due Date: $formatted", style = MaterialTheme.typography.bodyMedium)
         }
 
@@ -114,10 +116,27 @@ fun NewTaskScreen(
                     name = ""
                     desc = ""
                     showDatePicker = false
+                } else {
+                    // show warning for 2 seconds
+                    showWarning = true
                 }
             },
         ) {
             Text("Add Task")
+        }
+
+        if (showWarning) {
+            Text(
+                "Task name cannot be empty",
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+
+            // Auto-hide after 2 seconds
+            LaunchedEffect(Unit) {
+                kotlinx.coroutines.delay(2000)
+                showWarning = false
+            }
         }
 
         Spacer(modifier = Modifier.height(10.dp))

@@ -7,7 +7,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.remindme.ui.NewTaskScreen
+import com.example.remindme.ui.view.NewTaskScreen
 import com.example.remindme.ui.view.OverviewScreen
 import com.example.remindme.ui.view.TaskListScreen
 import com.example.remindme.viewmodel.TaskViewModel

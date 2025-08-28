@@ -8,7 +8,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.remindme.ui.NewTaskScreen
 import com.example.remindme.viewmodel.TaskViewModel
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -87,6 +86,38 @@ class NewTaskScreenTest {
             -1 - 3_600_000
             )
         }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Test
+    fun add_task_without_name_shows_error_message() {
+        composeTestRule.setContent {
+            NewTaskScreen(
+                viewModel,
+                onGoToOverview = { }
+            )
+        }
+        // Ensure task name is empty
+        composeTestRule.onNodeWithTag("Task Name Field").performTextInput("")
+        // Click AddTask button
+        composeTestRule.onNodeWithTag("Add Task Button").performClick()
+        // Assert warning text appears
+        composeTestRule.onNodeWithText("Task name cannot be empty").assertExists()
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Test
+    fun newTaskScreen_defaultDatePickerState_branch_covered() {
+        composeTestRule.setContent {
+            // Do NOT pass datePickerState → default branch runs
+            NewTaskScreen(
+                viewModel,
+                onGoToOverview = {}
+            )
+        }
+
+        // Minimal interaction to trigger Compose and remember execution
+        composeTestRule.onNodeWithTag("Task Name Field").performTextInput("X")
     }
 
 }

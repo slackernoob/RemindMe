@@ -2,6 +2,7 @@ package com.example.remindme.ui.view
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -45,7 +46,7 @@ class TaskListScreenTestNoHilt {
     fun displays_tasks_correctly() {
         val fakeTasks = listOf(
             Task(id = 1, name = "Task 1", dateDue = 123L, timeDue = null),
-            Task(id = 2, name = "Task 2", dateDue = 456L)
+            Task(id = 2, name = "Task 2", dateDue = -1)
         )
 
         every { viewModel.tasks } returns flowOf(fakeTasks).stateIn(
@@ -88,9 +89,14 @@ class TaskListScreenTestNoHilt {
 
         // Populating task list with a task such that the task UI shows up
         val task = Task(id = 1, name = "Task 1", dateDue = 123L, timeDue = null)
-        fakeTasksFlow.value = listOf(task)
+        val task2 = Task(id = 2, name = "Task 2", dateDue = -1)
+//        val fakeTasks = listOf(
+//            Task(id = 1, name = "Task 1", dateDue = 123L, timeDue = null),
+//            Task(id = 2, name = "Task 2", dateDue = -1)
+//        )
+        fakeTasksFlow.value = listOf(task, task2)
 
-        every { viewModel.tasks } returns flowOf(listOf(task)).stateIn(
+        every { viewModel.tasks } returns flowOf(listOf(task, task2)).stateIn(
             scope = CoroutineScope(Dispatchers.Unconfined),
             started = SharingStarted.Eagerly,
             initialValue = emptyList()
@@ -100,7 +106,7 @@ class TaskListScreenTestNoHilt {
             TaskListScreen(viewModel)
         }
 
-        composeTestRule.onNodeWithText("Edit").performClick()
+        composeTestRule.onAllNodesWithText("Edit")[0].performClick()
         composeTestRule.onNodeWithText("Edit Task").assertIsDisplayed()
 
         composeTestRule.onNodeWithTag("Date Picker").performClick()

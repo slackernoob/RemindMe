@@ -5,7 +5,8 @@ plugins {
     alias(libs.plugins.hilt.android)
     id("kotlin-kapt")
     alias(libs.plugins.ksp) // Kotlin Symbol Processing (for annotation processors like Room/Hilt)
-    jacoco
+//    jacoco
+    id("jacoco")
 }
 jacoco {
     toolVersion = "0.8.13"
@@ -122,6 +123,7 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/*Test*.*",
         "android/**/*.*",
         "**/*\$*Companion*",
+        "**/*$*Composable*",
         "**/*\$*Lambda*",
         "**/*\$*Impl*",
         "**/*Hilt*.*",
@@ -131,20 +133,23 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/hilt_aggregated_deps/**",
         "**/dagger/hilt/internal/aggregatedroot/codegen/**",
         "**/di/**",
-        "**/ui/theme/**" // optional if you don’t care about theme coverage
+        "**/ui/theme/**", // exclude theme coverage
+        "**/com/example/remindme/data/*_Impl*.*", // Room generated classes
+        "**/com/example/remindme/data/TaskDatabase_Impl.*"
     )
-    val debugTree = fileTree("${layout.buildDirectory.get().asFile}/intermediates/javac/debug") {
-        exclude(fileFilter)
-    }
+//    val debugTree = fileTree("${layout.buildDirectory.get().asFile}/intermediates/javac/debug/compileDebugJavaWithJavac/classes") {
+//        exclude(fileFilter)
+//    }
 
     val kotlinDebugTree = fileTree("${layout.buildDirectory.get().asFile}/tmp/kotlin-classes/debug") {
         exclude(fileFilter)
     }
 
     val mainSrc = "$projectDir/src/main/java"
+    val mainKotlinSrc = "$projectDir/src/main/kotlin"
 
-    sourceDirectories.setFrom(files(mainSrc))
-    classDirectories.setFrom(files(debugTree, kotlinDebugTree))
+    sourceDirectories.setFrom(files(mainSrc, mainKotlinSrc))
+    classDirectories.setFrom(files( kotlinDebugTree))
     executionData.setFrom(
         fileTree(layout.buildDirectory.get().asFile) {
             include(
