@@ -47,7 +47,6 @@ class TaskListScreenTestNoHilt {
             Task(id = 1, name = "Task 1", dateDue = 123L, timeDue = null),
             Task(id = 2, name = "Task 2", dateDue = 456L)
         )
-//        fakeTasksFlow.value = fakeTasks
 
         every { viewModel.tasks } returns flowOf(fakeTasks).stateIn(
             scope = CoroutineScope(Dispatchers.Unconfined),
@@ -58,8 +57,6 @@ class TaskListScreenTestNoHilt {
         composeTestRule.setContent {
             TaskListScreen(
                 viewModel,
-                onGoToMain = { },
-                onGoToOverview = { }
             )
         }
 
@@ -76,14 +73,8 @@ class TaskListScreenTestNoHilt {
         val task = Task(id = 1, name = "Task 1", dateDue = 123L, timeDue = null)
         fakeTasksFlow.value = listOf(task)
 
-//        every {viewModel.tasks} returns flowOf(fakeTasks).stateIn(
-//            scope = CoroutineScope(Dispatchers.Unconfined),
-//            started = SharingStarted.Eagerly,
-//            initialValue = emptyList()
-//        )
-
         composeTestRule.setContent {
-            TaskListScreen(viewModel, {}, {})
+            TaskListScreen(viewModel)
         }
 
         composeTestRule.onNodeWithText("Delete").performClick()
@@ -106,7 +97,7 @@ class TaskListScreenTestNoHilt {
         )
 
         composeTestRule.setContent {
-            TaskListScreen(viewModel, {}, {})
+            TaskListScreen(viewModel)
         }
 
         composeTestRule.onNodeWithText("Edit").performClick()
@@ -131,7 +122,7 @@ class TaskListScreenTestNoHilt {
         )
 
         composeTestRule.setContent {
-            TaskListScreen(viewModel, {}, {})
+            TaskListScreen(viewModel)
         }
 
         composeTestRule.onNodeWithText("Edit").performClick()

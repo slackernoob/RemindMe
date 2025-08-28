@@ -124,6 +124,13 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/*\$*Companion*",
         "**/*\$*Lambda*",
         "**/*\$*Impl*",
+        "**/*Hilt*.*",
+        "**/*Dagger*.*",
+        "**/*_Factory*.*",
+        "**/generated/**",
+        "**/hilt_aggregated_deps/**",
+        "**/dagger/hilt/internal/aggregatedroot/codegen/**",
+        "**/di/**",
         "**/ui/theme/**" // optional if you don’t care about theme coverage
     )
     val debugTree = fileTree("${layout.buildDirectory.get().asFile}/intermediates/javac/debug") {

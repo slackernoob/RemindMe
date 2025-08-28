@@ -27,8 +27,6 @@ class NewTaskScreenTest {
 
     private lateinit var viewModel: TaskViewModel
 
-//    private val fakeTasksFlow = MutableStateFlow<List<Task>>(emptyList())
-
     @Before
     fun setup() {
         viewModel = mockk(relaxed = true)
@@ -40,7 +38,6 @@ class NewTaskScreenTest {
         composeTestRule.setContent {
             NewTaskScreen(
                 viewModel,
-                onGoToList = { },
                 onGoToOverview = { }
             )
         }
@@ -60,7 +57,6 @@ class NewTaskScreenTest {
             )
             NewTaskScreen(
                 viewModel,
-                onGoToList = {},
                 onGoToOverview = {},
                 datePickerState = testState // override datepicker state
             )
@@ -74,7 +70,6 @@ class NewTaskScreenTest {
         composeTestRule.setContent {
             NewTaskScreen(
                 viewModel,
-                onGoToList = { },
                 onGoToOverview = { }
             )
         }
@@ -82,7 +77,6 @@ class NewTaskScreenTest {
             .performTextInput("Test Task")
         composeTestRule.onNodeWithTag("Description Field")
             .performTextInput("Test Description")
-        val curTime = System.currentTimeMillis()
         composeTestRule.onNodeWithTag("Add Task Button").performClick()
 
 

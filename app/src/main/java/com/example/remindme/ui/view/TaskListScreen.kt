@@ -35,7 +35,11 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskListScreen(viewModel: TaskViewModel = hiltViewModel(), onGoToMain: () -> Unit, onGoToOverview: () -> Unit) {
+fun TaskListScreen(viewModel: TaskViewModel = hiltViewModel(),
+//                   onGoToMain: () -> Unit,
+//                   onGoToOverview: () -> Unit
+    )
+{
     val tasks by viewModel.tasks.collectAsState()
     var editingTask by remember { mutableStateOf<Task?>(null) }
 

@@ -16,11 +16,10 @@ import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.remindme.navigation.NavGraph
-import com.example.remindme.viewmodel.TaskViewModel
 
 
 @Composable
-fun RemindMeApp(navController: NavHostController, viewModel: TaskViewModel) {
+fun RemindMeApp(navController: NavHostController) {
     val items = listOf("New Task", "Tasks")
     val routes = listOf("main", "list")
     val currentBackStackEntry by navController.currentBackStackEntryAsState()

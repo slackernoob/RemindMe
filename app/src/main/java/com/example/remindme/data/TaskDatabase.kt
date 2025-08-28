@@ -13,17 +13,17 @@ abstract class TaskDatabase : RoomDatabase() {
     companion object {
         @Volatile private var INSTANCE: TaskDatabase? = null
 
-        fun getDatabase(context: Context): TaskDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    TaskDatabase::class.java,
-                    "task_database"
-                ).fallbackToDestructiveMigration(false)
-                    .build()
-                INSTANCE = instance
-                instance
-            }
-        }
+//        fun getDatabase(context: Context): TaskDatabase {
+//            return INSTANCE ?: synchronized(this) {
+//                val instance = Room.databaseBuilder(
+//                    context.applicationContext,
+//                    TaskDatabase::class.java,
+//                    "task_database"
+//                ).fallbackToDestructiveMigration(false)
+//                    .build()
+//                INSTANCE = instance
+//                instance
+//            }
+//        }
     }
 }

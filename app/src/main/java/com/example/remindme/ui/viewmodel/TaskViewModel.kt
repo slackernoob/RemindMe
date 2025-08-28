@@ -1,7 +1,6 @@
 package com.example.remindme.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.remindme.data.Task
 import com.example.remindme.data.TaskDao
@@ -40,12 +39,12 @@ class TaskViewModel @Inject constructor(
         }
     }
 }
-
-class TaskViewModelFactory(private val dao: TaskDao) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(TaskViewModel::class.java)) {
-            return TaskViewModel(dao) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}
+// Don't need this anymore as Hilt's DatabaseModule has a provider for ViewModel
+//class TaskViewModelFactory(private val dao: TaskDao) : ViewModelProvider.Factory {
+//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//        if (modelClass.isAssignableFrom(TaskViewModel::class.java)) {
+//            return TaskViewModel(dao) as T
+//        }
+//        throw IllegalArgumentException("Unknown ViewModel class")
+//    }
+//}

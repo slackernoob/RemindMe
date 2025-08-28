@@ -31,15 +31,12 @@ import com.example.remindme.viewmodel.TaskViewModel
 @Composable
 fun NewTaskScreen(
     viewModel: TaskViewModel,
-    onGoToList: () -> Unit,
     onGoToOverview: () -> Unit,
     datePickerState: DatePickerState = rememberDatePickerState()
 ) {
     var name by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
 
-    // Date picker state
-//    val datePickerState = rememberDatePickerState()
     var showDatePicker by remember { mutableStateOf(false) }
 
     Column(
@@ -50,6 +47,7 @@ fun NewTaskScreen(
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier
                 .padding(bottom = 16.dp)
+                .testTag("Add Task Title")
         )
 
         OutlinedTextField(

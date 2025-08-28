@@ -16,8 +16,7 @@ import com.example.remindme.viewmodel.TaskViewModel
 @Composable
 fun NavGraph(
     navController: NavHostController,
-//    viewModel: TaskViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier
 ) {
     val viewModel: TaskViewModel = hiltViewModel()
 
@@ -29,15 +28,12 @@ fun NavGraph(
         composable("main") {
             NewTaskScreen(
                 viewModel,
-                onGoToList = { navController.navigate("list") },
                 onGoToOverview = { navController.navigate("overview") }
             )
         }
         composable("list") {
             TaskListScreen(
                 viewModel,
-                onGoToMain = { navController.navigate("main") },
-                onGoToOverview = { navController.navigate("overview") }
             )
         }
         composable("overview") {
