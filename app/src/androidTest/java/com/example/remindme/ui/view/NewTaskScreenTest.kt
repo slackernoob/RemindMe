@@ -62,6 +62,21 @@ class NewTaskScreenTest {
         }
         composeTestRule.onNodeWithText("Due Date: Fri, 05 Dec 2025").assertExists()
     }
+//
+//    @OptIn(ExperimentalMaterial3Api::class)
+//    @Test
+//    fun null_datePickerState_used() {
+//        composeTestRule.setContent {
+//            NewTaskScreen(
+//                viewModel,
+//                onGoToOverview = {},
+////                datePickerState = null
+//            )
+//        }
+//
+//        composeTestRule.onNodeWithTag("Select Due Date Button").assertExists()
+//    }
+
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Test
@@ -86,6 +101,26 @@ class NewTaskScreenTest {
             -1 - 3_600_000
             )
         }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Test
+    fun add_task_with_date() {
+
+        composeTestRule.setContent {
+            val testState = rememberDatePickerState(
+                initialSelectedDateMillis = LocalDate.of(2025, 12, 5)
+                    .atStartOfDay(ZoneId.systemDefault())
+                    .toInstant()
+                    .toEpochMilli()
+            )
+            NewTaskScreen(
+                viewModel,
+                onGoToOverview = {},
+                datePickerState = testState // override datepicker state
+            )
+        }
+        composeTestRule.onNodeWithTag("Add Task Button").performClick()
     }
 
     @OptIn(ExperimentalMaterial3Api::class)

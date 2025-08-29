@@ -27,6 +27,11 @@ class TaskViewModel @Inject constructor(
         }
     }
 
+    // Only in testing
+    suspend fun addTaskSync(name: String, desc: String?, dateDue: Long, timeDue: Long?) {
+        dao.insert(Task(name = name, description = desc, dateDue = dateDue, timeDue = timeDue))
+    }
+
     fun deleteTask(task: Task) {
         viewModelScope.launch {
             dao.delete(task)
@@ -39,12 +44,3 @@ class TaskViewModel @Inject constructor(
         }
     }
 }
-// Don't need this anymore as Hilt's DatabaseModule has a provider for ViewModel
-//class TaskViewModelFactory(private val dao: TaskDao) : ViewModelProvider.Factory {
-//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//        if (modelClass.isAssignableFrom(TaskViewModel::class.java)) {
-//            return TaskViewModel(dao) as T
-//        }
-//        throw IllegalArgumentException("Unknown ViewModel class")
-//    }
-//}

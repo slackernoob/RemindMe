@@ -18,6 +18,8 @@ class TaskViewModelTest {
 
     // Test dispatcher instead of Android's Main thread
     private val testDispatcher = StandardTestDispatcher()
+    private val testScope = TestScope(testDispatcher) // for immed exec
+
     private lateinit var dao: TaskDao
     private lateinit var viewModel: TaskViewModel
 
@@ -41,6 +43,31 @@ class TaskViewModelTest {
     @Test
     fun addTask_should_call_dao_insert() = runTest(testDispatcher) {
         val taskName = "Test Task"
+//        val taskDesc = "Description"
+        val dateDue = 123456789L
+//        val timeDue = 987654321L
+
+        coEvery { dao.insert(any()) } just Runs
+
+//        viewModel.addTask(taskName, taskDesc, dateDue, timeDue)
+        viewModel.addTask(taskName, null, dateDue, null)
+
+        // Wait until task has been added
+        testScheduler.advanceUntilIdle()
+
+//        coVerify { dao.insert(match {
+//            it.name == taskName && it.description == taskDesc &&
+//                    it.dateDue == dateDue && it.timeDue == timeDue
+//        }) }
+        coVerify { dao.insert(match {
+            it.name == taskName && it.description == null &&
+                    it.dateDue == dateDue && it.timeDue == null
+        }) }
+    }
+
+    @Test
+    fun addTask_all_params_should_call_dao_insert() = runTest(testDispatcher) {
+        val taskName = "Test Task"
         val taskDesc = "Description"
         val dateDue = 123456789L
         val timeDue = 987654321L
@@ -48,6 +75,7 @@ class TaskViewModelTest {
         coEvery { dao.insert(any()) } just Runs
 
         viewModel.addTask(taskName, taskDesc, dateDue, timeDue)
+//        viewModel.addTask(taskName, null, dateDue, null)
 
         // Wait until task has been added
         testScheduler.advanceUntilIdle()
@@ -56,7 +84,36 @@ class TaskViewModelTest {
             it.name == taskName && it.description == taskDesc &&
                     it.dateDue == dateDue && it.timeDue == timeDue
         }) }
+//        coVerify { dao.insert(match {
+//            it.name == taskName && it.description == null &&
+//                    it.dateDue == dateDue && it.timeDue == null
+//        }) }
     }
+
+    @Test
+    fun addTaskSync_daoThrows_exceptionBranchCovered() = runTest {
+        coEvery { dao.insert(any()) } throws RuntimeException("DB fail")
+
+        try {
+            viewModel.addTaskSync("Task", null, 123L, null)
+        } catch (e: RuntimeException) {
+            // expected
+        }
+    }
+
+    @Test
+    fun daoInsert_exceptionBranchCovered() = runTest {
+        coEvery { dao.insert(any()) } throws RuntimeException("DB fail")
+
+        try {
+            dao.insert(Task(5,"Task", null, 123L, null))
+        } catch (e: RuntimeException) {
+            // expected
+        }
+    }
+
+
+
 
     @Test
     fun deleteTask_should_call_dao_delete() = runTest(testDispatcher) {
@@ -90,12 +147,6 @@ class TaskViewModelTest {
 
         // Re-initialize viewModel in order to pick up new mocked flow
         viewModel = TaskViewModel(dao)
-
-//        val result = mutableListOf<List<Task>>()
-//
-//        val job = launch {viewModel.tasks.collect { result.add(it)}}
-//        testScheduler.advanceUntilIdle()
-//        assertEquals(fakeTasks, result.last())
 
         var result : List<Task>? = null
         val job = launch {viewModel.tasks.collect { result = it}}

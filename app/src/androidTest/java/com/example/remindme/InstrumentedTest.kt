@@ -1,6 +1,7 @@
 package com.example.remindme
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -8,6 +9,7 @@ import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.remindme.data.TaskDao
 import com.example.remindme.data.TaskDatabase
@@ -49,6 +51,17 @@ class InstrumentedTest {
     fun instrumentedTest() {
         // Add task
         composeTestRule.onNodeWithTag("Task Name Field").performTextInput("Sample task")
+
+        composeTestRule.onNodeWithTag("Select Due Date Button").performClick()
+        composeTestRule.onNodeWithText("Cancel").performClick()
+        composeTestRule.onNodeWithTag("Select Due Date Button").performClick()
+        pressBack()
+
+        composeTestRule.onNodeWithTag("Select Due Date Button").performClick()
+        composeTestRule.onNodeWithContentDescription("Switch to text input mode")
+            .performClick()
+        composeTestRule.onNodeWithText("Date").performTextInput("10/17/2025")
+        composeTestRule.onNodeWithText("OK").performClick()
         composeTestRule.onNodeWithTag("Add Task Button").performClick()
         // Check if added task displayed in task list
         composeTestRule.onNodeWithTag("Navigation Bar Tasks").performClick()
@@ -77,5 +90,22 @@ class InstrumentedTest {
         composeTestRule.onNodeWithText("Delete").performClick()
         // Check that task is deleted successfully
         composeTestRule.onNodeWithText("Updated task").assertDoesNotExist()
+    }
+
+    @Test
+    fun newTaskAddTaskWithAndWithoutDate() {
+        composeTestRule.onNodeWithTag("Task Name Field").performTextInput("Sample task 2")
+        composeTestRule.onNodeWithTag("Add Task Button").performClick()
+
+        composeTestRule.onNodeWithTag("Task Name Field").performTextInput("Sample task")
+
+        composeTestRule.onNodeWithTag("Select Due Date Button").performClick()
+        composeTestRule.onNodeWithContentDescription("Switch to text input mode")
+            .performClick()
+        composeTestRule.onNodeWithText("Date").performTextInput("10/17/2025")
+        composeTestRule.onNodeWithText("OK").performClick()
+        composeTestRule.onNodeWithTag("Add Task Button").performClick()
+
+
     }
 }

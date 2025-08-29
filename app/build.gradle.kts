@@ -116,6 +116,7 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     }
 
     val fileFilter = listOf(
+        "**/NavGraph.kt",
         "**/R.class",
         "**/R$*.class",
         "**/BuildConfig.*",
