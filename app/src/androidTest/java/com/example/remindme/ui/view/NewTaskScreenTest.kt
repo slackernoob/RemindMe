@@ -8,7 +8,8 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.remindme.viewmodel.TaskViewModel
+import com.example.remindme.data.Task
+import com.example.remindme.ui.viewmodel.TaskViewModel
 import io.mockk.coVerify
 import io.mockk.mockk
 import org.junit.Before
@@ -93,14 +94,13 @@ class NewTaskScreenTest {
             .performTextInput("Test Description")
         composeTestRule.onNodeWithTag("Add Task Button").performClick()
 
-
-        coVerify { viewModel.addTask(
-            "Test Task",
-            "Test Description",
-            -1,
-            -1 - 3_600_000
-            )
-        }
+        val task = Task(
+            name = "Test Task",
+            description = "Test Description",
+            dateDue = -1,
+            timeDue = -1
+        )
+        coVerify { viewModel.addTask(task) }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)

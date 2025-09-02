@@ -13,12 +13,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.remindme.viewmodel.TaskViewModel
+import com.example.remindme.ui.viewmodel.TaskViewModel
 
 
 @Composable
-fun OverviewScreen(viewModel: TaskViewModel, onGoToList: () -> Unit, onGoToMain: () -> Unit) {
+fun OverviewScreen(
+    viewModel: TaskViewModel = hiltViewModel(),
+    onGoToList: () -> Unit,
+    onGoToMain: () -> Unit
+) {
     val tasks by viewModel.tasks.collectAsStateWithLifecycle()
 
     Column(

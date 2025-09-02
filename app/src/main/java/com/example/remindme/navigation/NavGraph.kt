@@ -10,7 +10,7 @@ import androidx.navigation.compose.composable
 import com.example.remindme.ui.view.NewTaskScreen
 import com.example.remindme.ui.view.OverviewScreen
 import com.example.remindme.ui.view.TaskListScreen
-import com.example.remindme.viewmodel.TaskViewModel
+import com.example.remindme.ui.viewmodel.TaskViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,18 +27,18 @@ fun NavGraph(
     ) {
         composable("main") {
             NewTaskScreen(
-                viewModel,
+//                viewModel,
                 onGoToOverview = { navController.navigate("overview") }
             )
         }
         composable("list") {
             TaskListScreen(
-                viewModel,
+//                viewModel,
             )
         }
         composable("overview") {
             OverviewScreen(
-                viewModel,
+//                viewModel,
                 onGoToList = { navController.navigate("list") },
                 onGoToMain = { navController.navigate("main") }
             )

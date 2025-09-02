@@ -92,6 +92,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation("android.arch.core:core-testing:1.0.0")
 
     // Testing - Instrumented/Android Tests
     androidTestImplementation(libs.androidx.junit)
@@ -147,10 +148,14 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         exclude(fileFilter)
     }
 
-    val mainSrc = "$projectDir/src/main/java"
-    val mainKotlinSrc = "$projectDir/src/main/kotlin"
+//    val mainSrc = "$projectDir/src/main/java"
+    val mainSrc = project.extensions
+        .getByType<com.android.build.gradle.AppExtension>()
+        .sourceSets
+        .getByName("main")
+        .java.srcDirs
 
-    sourceDirectories.setFrom(files(mainSrc, mainKotlinSrc))
+    sourceDirectories.setFrom(files(mainSrc))
     classDirectories.setFrom(files( kotlinDebugTree))
     executionData.setFrom(
         fileTree(layout.buildDirectory.get().asFile) {

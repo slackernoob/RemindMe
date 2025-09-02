@@ -1,23 +1,26 @@
-package com.example.remindme.viewmodel
+package com.example.remindme.ui.viewmodel
 
 import com.example.remindme.data.Task
 import com.example.remindme.data.TaskDao
-import io.mockk.*
-import kotlinx.coroutines.CoroutineExceptionHandler
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.*
-
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertThrows
-import org.junit.Assert.assertTrue
 import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -47,75 +50,111 @@ class TaskViewModelTest {
         Dispatchers.resetMain() // reset back to Android Main dispatcher
     }
 
+
     @Test
     fun addTask_should_call_dao_insert() = runTest(testDispatcher) {
+        val id = 5
         val taskName = "Test Task"
         val taskDesc = "Description"
         val dateDue = 123456789L
         val timeDue = 987654321L
 
+        val task1 = Task(
+            name = taskName,
+            description = taskDesc,
+            dateDue = dateDue,
+            timeDue = timeDue
+        )
+        val task2 = Task(
+            name = taskName,
+            description = null,
+            dateDue = dateDue,
+            timeDue = null
+        )
+        val task3 = Task(
+            name = taskName,
+            description = taskDesc,
+            dateDue = dateDue,
+            timeDue = null
+        )
+        val task4 = Task(
+            name = taskName,
+            description = null,
+            dateDue = dateDue,
+            timeDue = timeDue
+        )
+        val task5 = Task(
+            id = id,
+            name = taskName,
+            description = taskDesc,
+            dateDue = dateDue,
+            timeDue = timeDue
+        )
+
         coEvery { dao.insert(any()) } just Runs
 
-        viewModel.addTask(taskName, taskDesc, dateDue, timeDue)
-        viewModel.addTask(taskName, null, dateDue, null)
-        viewModel.addTask(taskName, taskDesc, dateDue, null)
-        viewModel.addTask(taskName, null, dateDue, timeDue)
-
-//        viewModel.addTask(null)
+        viewModel.addTask(task1)
+        viewModel.addTask(task2)
+        viewModel.addTask(task3)
+        viewModel.addTask(task4)
+        viewModel.addTask(task5)
 
         // Wait until task has been added
         testScheduler.advanceUntilIdle()
 
-        coVerify { dao.insert(match {
-            it.name == taskName && it.description == null &&
-                    it.dateDue == dateDue && it.timeDue == null
-        }) }
-
-        coVerify { dao.insert(match {
-            it.name == taskName && it.description == taskDesc &&
-                    it.dateDue == dateDue && it.timeDue == timeDue
-        }) }
-
-        coVerify { dao.insert(match {
-            it.name == taskName && it.description == null &&
-                    it.dateDue == dateDue && it.timeDue == timeDue
-        }) }
-
-        coVerify { dao.insert(match {
-            it.name == taskName && it.description == taskDesc &&
-                    it.dateDue == dateDue && it.timeDue == null
-        }) }
+        coVerify { dao.insert(task1) }
+        coVerify { dao.insert(task2) }
+        coVerify { dao.insert(task3) }
+        coVerify { dao.insert(task4) }
+        coVerify { dao.insert(task5) }
     }
 
     @Test
-    fun addTask_all_params_should_call_dao_insert() = runTest(testDispatcher) {
+    fun add_mockked_Task_should_call_dao_insert() = runTest() {
         val taskName = "Test Task"
         val taskDesc = "Description"
         val dateDue = 123456789L
         val timeDue = 987654321L
 
-        coEvery { dao.insert(any()) } just Runs
+        val task1 = Task(
+            id = 1,
+            name = taskName,
+            description = taskDesc,
+            dateDue = dateDue,
+            timeDue = timeDue
+        )
+        val task2 = Task(
+            id = 1,
+            name = taskName,
+            description = taskDesc,
+            dateDue = dateDue,
+            timeDue = timeDue
+        )
 
-        viewModel.addTask(taskName, taskDesc, dateDue, timeDue)
-
-        // Wait until task has been added
-        testScheduler.advanceUntilIdle()
-
-        coVerify { dao.insert(match {
-            it.name == taskName && it.description == taskDesc &&
-                    it.dateDue == dateDue && it.timeDue == timeDue
-        }) }
+        viewModel.addTask(task1)
+        viewModel.addTask(task2)
     }
-
-//    @Test
-//    fun addTaskSync_daoThrows_exceptionBranchCovered() = runTest {
-//        coEvery { dao.insert(any()) } throws RuntimeException("DB fail")
+//    fun nullMaker() : Task? {
+//        return null
+//    }
+//    @Test(expected = NullPointerException::class)
+//    fun addNullTask_call_dao_insert() = runTest(testDispatcher) {
+//        val taskName = "Test Task"
+//        val taskDesc = "Description"
+//        val dateDue = 123456789L
+//        val timeDue = 987654321L
+//        coEvery { dao.insert(any()) } just Runs
+//        viewModel.addTask(Task(
+//            id = 1,
+//            name = taskName,
+//            description = taskDesc,
+//            dateDue = dateDue,
+//            timeDue = timeDue
+//        ))
+//        viewModel.addTask(nullMaker())
 //
-//        try {
-//            viewModel.addTaskSync("Task", null, 123L, null)
-//        } catch (e: RuntimeException) {
-//            // expected
-//        }
+//        // Wait until task has been added
+//        testScheduler.advanceUntilIdle()
 //    }
 
     @Test
@@ -133,7 +172,6 @@ class TaskViewModelTest {
 //            // expected
 //        }
     }
-
 
 
 

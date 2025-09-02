@@ -1,7 +1,7 @@
 package com.example.remindme.di
 
 import com.example.remindme.data.TaskDao
-import com.example.remindme.viewmodel.TaskViewModel
+import com.example.remindme.ui.viewmodel.TaskViewModel
 import org.junit.Before
 import io.mockk.*
 import junit.framework.TestCase.assertNotNull

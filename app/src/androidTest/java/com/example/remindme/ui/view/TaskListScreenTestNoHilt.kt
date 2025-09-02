@@ -10,7 +10,7 @@ import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.remindme.data.Task
-import com.example.remindme.viewmodel.TaskViewModel
+import com.example.remindme.ui.viewmodel.TaskViewModel
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
