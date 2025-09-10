@@ -118,7 +118,7 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     }
 
     val fileFilter = listOf(
-        "**/NavGraph.kt",
+//        "**/NavGraph.kt",
         "**/R.class",
         "**/R$*.class",
         "**/BuildConfig.*",
@@ -126,8 +126,8 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/*Test*.*",
         "android/**/*.*",
         "**/*\$*Companion*",
-        "**/*$*Composable*",
-        "**/*\$*Lambda*",
+//        "**/*$*Composable*",
+//        "**/*\$*Lambda*",
         "**/*\$*Impl*",
         "**/*Hilt*.*",
         "**/*Dagger*.*",
@@ -135,7 +135,7 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/generated/**",
         "**/hilt_aggregated_deps/**",
         "**/dagger/hilt/internal/aggregatedroot/codegen/**",
-        "**/di/**",
+//        "**/di/**",
         "**/ui/theme/**", // exclude theme coverage
         "**/com/example/remindme/data/*_Impl*.*", // Room generated classes
         "**/com/example/remindme/data/TaskDatabase_Impl.*"

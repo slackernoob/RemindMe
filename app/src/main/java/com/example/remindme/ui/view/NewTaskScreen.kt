@@ -10,13 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberBottomAppBarState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,18 +26,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.remindme.core.utils.getDueDateWithNullCheck
+import com.example.remindme.core.utils.getFormattedDueDateText
+import com.example.remindme.core.utils.getTimeDueWithDateDue
 import com.example.remindme.data.Task
 import com.example.remindme.ui.viewmodel.TaskViewModel
-import java.text.SimpleDateFormat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewTaskScreen(
     viewModel: TaskViewModel = hiltViewModel(),
     onGoToOverview: () -> Unit,
-    datePickerState: DatePickerState = rememberDatePickerState()
+//    datePickerState: DatePickerState = rememberDatePickerState()
 ) {
-//    val datePickerState = rememberDatePickerState()
+    var datePickerState = rememberDatePickerState()
     var name by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
     var showWarning by remember { mutableStateOf(false) }
@@ -84,10 +84,25 @@ fun NewTaskScreen(
         }
 
         // Show selected date
-        datePickerState.selectedDateMillis?.let {
-            val formatted = SimpleDateFormat("EEE, dd MMM yyyy").format(it)
-            Text("Due Date: $formatted", style = MaterialTheme.typography.bodyMedium)
-        }
+//        datePickerState.selectedDateMillis?.let {
+//            val formatted = SimpleDateFormat("EEE, dd MMM yyyy").format(it)
+//            Text("Due Date: $formatted", style = MaterialTheme.typography.bodyMedium)
+//        }
+
+//        val formattedDate = formatDueDateReadable(datePickerState.selectedDateMillis)
+//        formattedDate?.let {
+//            Text("Due Date: $it", style = MaterialTheme.typography.bodyMedium)
+//        }
+        Text(
+            text = getFormattedDueDateText(datePickerState.selectedDateMillis),
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+
+//        Text(
+//            text = formattedDate?.let { "Due Date: $it" } ?: "No Due Date Selected",
+//            style = MaterialTheme.typography.bodyMedium
+//        )
 
         // DatePicker Dialog
         if (showDatePicker) {
@@ -114,13 +129,14 @@ fun NewTaskScreen(
             modifier = Modifier.testTag("Add Task Button"),
             onClick = {
                 if (name.isNotBlank()) {
-                    val dateDue = datePickerState.selectedDateMillis ?: -1 // handle -1
-                    var timeDue = 0L
-                    if (dateDue == -1L) {
-                        timeDue = -1
-                    } else {
-                        timeDue = dateDue - 3_600_000
-                    }
+                    val dateDue = getDueDateWithNullCheck(datePickerState.selectedDateMillis)
+//                    val dateDue = datePickerState.selectedDateMillis ?: -1 // handle -1
+                    val timeDue = getTimeDueWithDateDue(dateDue)
+//                    if (dateDue == -1L) {
+//                        timeDue = -1
+//                    } else {
+//                        timeDue = dateDue - 3_600_000
+//                    }
                     val task = Task(
                         name = name,
                         description = desc,

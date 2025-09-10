@@ -29,9 +29,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.remindme.core.utils.formatDueDateToEditString
 import com.example.remindme.data.Task
 import com.example.remindme.ui.viewmodel.TaskViewModel
-import dagger.hilt.android.AndroidEntryPoint
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -103,9 +103,10 @@ fun TaskListScreen(
 
                         // Displays due date of task, opens datepicker dialogue if clicked
                         Text(
-                            text = editDateState.selectedDateMillis?.let { millis ->
-                                "(Press to Edit) Due Date: ${java.text.SimpleDateFormat("yyyy-MM-dd").format(millis)}"
-                            } ?: "(Press to Edit) No Due Date",
+//                            text = editDateState.selectedDateMillis?.let { millis ->
+//                                "(Press to Edit) Due Date: ${java.text.SimpleDateFormat("yyyy-MM-dd").format(millis)}"
+//                            } ?: "(Press to Edit) No Due Date",
+                            text = formatDueDateToEditString(editDateState.selectedDateMillis),
                             modifier = Modifier
                                 .clickable { showDatePicker = true }
                                 .testTag("Date Picker")

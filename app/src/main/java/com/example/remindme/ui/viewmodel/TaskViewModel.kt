@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.remindme.data.Task
 import com.example.remindme.data.TaskDao
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -22,7 +23,7 @@ class TaskViewModel @Inject constructor(
     )
 
     fun addTask(task: Task) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             dao.insert(task)
         }
     }
@@ -34,13 +35,13 @@ class TaskViewModel @Inject constructor(
 //    }
 
     fun deleteTask(task: Task) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             dao.delete(task)
         }
     }
 
     fun updateTask(updatedTask: Task) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             dao.update(updatedTask)
         }
     }
