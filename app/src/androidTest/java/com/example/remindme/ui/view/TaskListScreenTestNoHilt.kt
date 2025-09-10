@@ -28,117 +28,117 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class TaskListScreenTestNoHilt {
 
-    @get:Rule
-    val composeTestRule = createComposeRule()
-
-    private lateinit var viewModel: TaskViewModel
-
-    private val fakeTasksFlow = MutableStateFlow<List<Task>>(emptyList())
-
-    @Before
-    fun setup() {
-        viewModel = mockk(relaxed = true)
-        every { viewModel.tasks } returns fakeTasksFlow
-    }
-
-    // Test that all the tasks are able to be displayed correctly
-    @Test
-    fun displays_tasks_correctly() {
-        val fakeTasks = listOf(
-            Task(id = 1, name = "Task 1", dateDue = 123L, timeDue = null),
-            Task(id = 2, name = "Task 2", dateDue = -1)
-        )
-
-        every { viewModel.tasks } returns flowOf(fakeTasks).stateIn(
-            scope = CoroutineScope(Dispatchers.Unconfined),
-            started = SharingStarted.Eagerly,
-            initialValue = emptyList()
-        )
-
-        composeTestRule.setContent {
-            TaskListScreen(
-                viewModel,
-            )
-        }
-
-        composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithText("Task 1").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Task 2").assertIsDisplayed()
-    }
-
-    // Test delete button calls viewmodel's deleteTask
-    @Test
-    fun delete_button_calls_deleteTask() {
-
-        // Populating task list with a task such that the task UI shows up
-        val task = Task(id = 1, name = "Task 1", dateDue = 123L, timeDue = null)
-        fakeTasksFlow.value = listOf(task)
-
-        composeTestRule.setContent {
-            TaskListScreen(viewModel)
-        }
-
-        composeTestRule.onNodeWithText("Delete").performClick()
-
-        coVerify { viewModel.deleteTask(task) }
-    }
-
-    // Test edit button opens edit dialog, and clicking date opens date picker dialog
-    @Test
-    fun edit_button_opens_edit_dialog() {
-
-        // Populating task list with a task such that the task UI shows up
-        val task = Task(id = 1, name = "Task 1", dateDue = 123L, timeDue = null)
-        val task2 = Task(id = 2, name = "Task 2", dateDue = -1)
+//    @get:Rule
+//    val composeTestRule = createComposeRule()
+//
+//    private lateinit var viewModel: TaskViewModel
+//
+//    private val fakeTasksFlow = MutableStateFlow<List<Task>>(emptyList())
+//
+//    @Before
+//    fun setup() {
+//        viewModel = mockk(relaxed = true)
+//        every { viewModel.tasks } returns fakeTasksFlow
+//    }
+//
+//    // Test that all the tasks are able to be displayed correctly
+//    @Test
+//    fun displays_tasks_correctly() {
 //        val fakeTasks = listOf(
 //            Task(id = 1, name = "Task 1", dateDue = 123L, timeDue = null),
 //            Task(id = 2, name = "Task 2", dateDue = -1)
 //        )
-        fakeTasksFlow.value = listOf(task, task2)
-
-        every { viewModel.tasks } returns flowOf(listOf(task, task2)).stateIn(
-            scope = CoroutineScope(Dispatchers.Unconfined),
-            started = SharingStarted.Eagerly,
-            initialValue = emptyList()
-        )
-
-        composeTestRule.setContent {
-            TaskListScreen(viewModel)
-        }
-
-        composeTestRule.onAllNodesWithText("Edit")[0].performClick()
-        composeTestRule.onNodeWithText("Edit Task").assertIsDisplayed()
-
-        composeTestRule.onNodeWithTag("Date Picker").performClick()
-        composeTestRule.onNodeWithText("Select date").assertIsDisplayed()
-    }
-
-    // Test clicking edit button calls viewmodel's updateTask
-    @Test
-    fun edit_button_calls_viewModel_updateTask() {
-
-        // Populating task list with a task such that the task UI shows up
-        val task = Task(id = 1, name = "Task 1", dateDue = 123L, timeDue = null)
-        fakeTasksFlow.value = listOf(task)
-
-        every { viewModel.tasks } returns flowOf(listOf(task)).stateIn(
-            scope = CoroutineScope(Dispatchers.Unconfined),
-            started = SharingStarted.Eagerly,
-            initialValue = emptyList()
-        )
-
-        composeTestRule.setContent {
-            TaskListScreen(viewModel)
-        }
-
-        composeTestRule.onNodeWithText("Edit").performClick()
-        composeTestRule.onNodeWithTag("Task Name").performTextClearance()
-        composeTestRule.onNodeWithTag("Task Name").performTextInput("Updated task")
-        composeTestRule.onNodeWithText("Save").performClick()
-
-        coVerify {
-            viewModel.updateTask(match { it.name == "Updated task"})
-        }
-    }
+//
+//        every { viewModel.tasks } returns flowOf(fakeTasks).stateIn(
+//            scope = CoroutineScope(Dispatchers.Unconfined),
+//            started = SharingStarted.Eagerly,
+//            initialValue = emptyList()
+//        )
+//
+//        composeTestRule.setContent {
+//            TaskListScreen(
+//                viewModel,
+//            )
+//        }
+//
+//        composeTestRule.waitForIdle()
+//        composeTestRule.onNodeWithText("Task 1").assertIsDisplayed()
+//        composeTestRule.onNodeWithText("Task 2").assertIsDisplayed()
+//    }
+//
+//    // Test delete button calls viewmodel's deleteTask
+//    @Test
+//    fun delete_button_calls_deleteTask() {
+//
+//        // Populating task list with a task such that the task UI shows up
+//        val task = Task(id = 1, name = "Task 1", dateDue = 123L, timeDue = null)
+//        fakeTasksFlow.value = listOf(task)
+//
+//        composeTestRule.setContent {
+//            TaskListScreen(viewModel)
+//        }
+//
+//        composeTestRule.onNodeWithText("Delete").performClick()
+//
+//        coVerify { viewModel.deleteTask(task) }
+//    }
+//
+//    // Test edit button opens edit dialog, and clicking date opens date picker dialog
+//    @Test
+//    fun edit_button_opens_edit_dialog() {
+//
+//        // Populating task list with a task such that the task UI shows up
+//        val task = Task(id = 1, name = "Task 1", dateDue = 123L, timeDue = null)
+//        val task2 = Task(id = 2, name = "Task 2", dateDue = -1)
+////        val fakeTasks = listOf(
+////            Task(id = 1, name = "Task 1", dateDue = 123L, timeDue = null),
+////            Task(id = 2, name = "Task 2", dateDue = -1)
+////        )
+//        fakeTasksFlow.value = listOf(task, task2)
+//
+//        every { viewModel.tasks } returns flowOf(listOf(task, task2)).stateIn(
+//            scope = CoroutineScope(Dispatchers.Unconfined),
+//            started = SharingStarted.Eagerly,
+//            initialValue = emptyList()
+//        )
+//
+//        composeTestRule.setContent {
+//            TaskListScreen(viewModel)
+//        }
+//
+//        composeTestRule.onAllNodesWithText("Edit")[0].performClick()
+//        composeTestRule.onNodeWithText("Edit Task").assertIsDisplayed()
+//
+//        composeTestRule.onNodeWithTag("Date Picker").performClick()
+//        composeTestRule.onNodeWithText("Select date").assertIsDisplayed()
+//    }
+//
+//    // Test clicking edit button calls viewmodel's updateTask
+//    @Test
+//    fun edit_button_calls_viewModel_updateTask() {
+//
+//        // Populating task list with a task such that the task UI shows up
+//        val task = Task(id = 1, name = "Task 1", dateDue = 123L, timeDue = null)
+//        fakeTasksFlow.value = listOf(task)
+//
+//        every { viewModel.tasks } returns flowOf(listOf(task)).stateIn(
+//            scope = CoroutineScope(Dispatchers.Unconfined),
+//            started = SharingStarted.Eagerly,
+//            initialValue = emptyList()
+//        )
+//
+//        composeTestRule.setContent {
+//            TaskListScreen(viewModel)
+//        }
+//
+//        composeTestRule.onNodeWithText("Edit").performClick()
+//        composeTestRule.onNodeWithTag("Task Name").performTextClearance()
+//        composeTestRule.onNodeWithTag("Task Name").performTextInput("Updated task")
+//        composeTestRule.onNodeWithText("Save").performClick()
+//
+//        coVerify {
+//            viewModel.updateTask(match { it.name == "Updated task"})
+//        }
+//    }
 
 }

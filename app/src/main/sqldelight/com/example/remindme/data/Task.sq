@@ -1,0 +1,24 @@
+-- Task.sq
+
+CREATE TABLE task_table (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    description TEXT,
+    dateDue INTEGER NOT NULL,
+    timeDue INTEGER
+);
+
+selectAll:
+SELECT * FROM task_table ORDER BY dateDue ASC;
+
+insertTask:
+INSERT INTO task_table(name, description, dateDue, timeDue)
+VALUES (?, ?, ?, ?);
+
+updateTask:
+UPDATE task_table
+SET name = ?, description = ?, dateDue = ?, timeDue = ?
+WHERE id = ?;
+
+deleteTask:
+DELETE FROM task_table WHERE id = ?;

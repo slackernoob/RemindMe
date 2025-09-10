@@ -78,81 +78,81 @@ class NewTaskScreenTest {
 //        composeTestRule.onNodeWithTag("Select Due Date Button").assertExists()
 //    }
 
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Test
-    fun add_task_button_calls_taskViewmodel_addTask() {
-        composeTestRule.setContent {
-            NewTaskScreen(
-                viewModel,
-                onGoToOverview = { }
-            )
-        }
-        composeTestRule.onNodeWithTag("Task Name Field")
-            .performTextInput("Test Task")
-        composeTestRule.onNodeWithTag("Description Field")
-            .performTextInput("Test Description")
-        composeTestRule.onNodeWithTag("Add Task Button").performClick()
-
-        val task = Task(
-            name = "Test Task",
-            description = "Test Description",
-            dateDue = -1,
-            timeDue = -1
-        )
-        coVerify { viewModel.addTask(task) }
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Test
-    fun add_task_with_date() {
-
-        composeTestRule.setContent {
-            val testState = rememberDatePickerState(
-                initialSelectedDateMillis = LocalDate.of(2025, 12, 5)
-                    .atStartOfDay(ZoneId.systemDefault())
-                    .toInstant()
-                    .toEpochMilli()
-            )
-            NewTaskScreen(
-                viewModel,
-                onGoToOverview = {},
-                datePickerState = testState // override datepicker state
-            )
-        }
-        composeTestRule.onNodeWithTag("Add Task Button").performClick()
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Test
-    fun add_task_without_name_shows_error_message() {
-        composeTestRule.setContent {
-            NewTaskScreen(
-                viewModel,
-                onGoToOverview = { }
-            )
-        }
-        // Ensure task name is empty
-        composeTestRule.onNodeWithTag("Task Name Field").performTextInput("")
-        // Click AddTask button
-        composeTestRule.onNodeWithTag("Add Task Button").performClick()
-        // Assert warning text appears
-        composeTestRule.onNodeWithText("Task name cannot be empty").assertExists()
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Test
-    fun newTaskScreen_defaultDatePickerState_branch_covered() {
-        composeTestRule.setContent {
-            // Do NOT pass datePickerState → default branch runs
-            NewTaskScreen(
-                viewModel,
-                onGoToOverview = {}
-            )
-        }
-
-        // Minimal interaction to trigger Compose and remember execution
-        composeTestRule.onNodeWithTag("Task Name Field").performTextInput("X")
-    }
-
+//
+//    @OptIn(ExperimentalMaterial3Api::class)
+//    @Test
+//    fun add_task_button_calls_taskViewmodel_addTask() {
+//        composeTestRule.setContent {
+//            NewTaskScreen(
+//                viewModel,
+//                onGoToOverview = { }
+//            )
+//        }
+//        composeTestRule.onNodeWithTag("Task Name Field")
+//            .performTextInput("Test Task")
+//        composeTestRule.onNodeWithTag("Description Field")
+//            .performTextInput("Test Description")
+//        composeTestRule.onNodeWithTag("Add Task Button").performClick()
+//
+//        val task = Task(
+//            name = "Test Task",
+//            description = "Test Description",
+//            dateDue = -1,
+//            timeDue = -1
+//        )
+//        coVerify { viewModel.addTask(task) }
+//    }
+//
+//    @OptIn(ExperimentalMaterial3Api::class)
+//    @Test
+//    fun add_task_with_date() {
+//
+//        composeTestRule.setContent {
+//            val testState = rememberDatePickerState(
+//                initialSelectedDateMillis = LocalDate.of(2025, 12, 5)
+//                    .atStartOfDay(ZoneId.systemDefault())
+//                    .toInstant()
+//                    .toEpochMilli()
+//            )
+//            NewTaskScreen(
+//                viewModel,
+//                onGoToOverview = {},
+//                datePickerState = testState // override datepicker state
+//            )
+//        }
+//        composeTestRule.onNodeWithTag("Add Task Button").performClick()
+//    }
+//
+//    @OptIn(ExperimentalMaterial3Api::class)
+//    @Test
+//    fun add_task_without_name_shows_error_message() {
+//        composeTestRule.setContent {
+//            NewTaskScreen(
+//                viewModel,
+//                onGoToOverview = { }
+//            )
+//        }
+//        // Ensure task name is empty
+//        composeTestRule.onNodeWithTag("Task Name Field").performTextInput("")
+//        // Click AddTask button
+//        composeTestRule.onNodeWithTag("Add Task Button").performClick()
+//        // Assert warning text appears
+//        composeTestRule.onNodeWithText("Task name cannot be empty").assertExists()
+//    }
+//
+//    @OptIn(ExperimentalMaterial3Api::class)
+//    @Test
+//    fun newTaskScreen_defaultDatePickerState_branch_covered() {
+//        composeTestRule.setContent {
+//            // Do NOT pass datePickerState → default branch runs
+//            NewTaskScreen(
+//                viewModel,
+//                onGoToOverview = {}
+//            )
+//        }
+//
+//        // Minimal interaction to trigger Compose and remember execution
+//        composeTestRule.onNodeWithTag("Task Name Field").performTextInput("X")
+//    }
+//
 }

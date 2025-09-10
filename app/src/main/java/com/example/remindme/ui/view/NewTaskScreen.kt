@@ -28,7 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.remindme.data.NewTask
 import com.example.remindme.data.Task
+import com.example.remindme.data.Task_table
 import com.example.remindme.ui.viewmodel.TaskViewModel
 import java.text.SimpleDateFormat
 
@@ -121,14 +123,15 @@ fun NewTaskScreen(
                     } else {
                         timeDue = dateDue - 3_600_000
                     }
-                    val task = Task(
+                    val task = NewTask(
                         name = name,
                         description = desc,
                         dateDue = dateDue,
                         timeDue = timeDue
                     )
                     viewModel.addTask(task)
-//                    viewModel.addTask(name, desc, dateDue = due, timeDue = due - 3_600_000) // dummy due in 1 day, reminder in 1 hour
+
+                    //viewModel.addTask(name, desc, dateDue = dateDue, timeDue = timeDue) // dummy due in 1 day, reminder in 1 hour
                     name = ""
                     desc = ""
                     datePickerState.selectedDateMillis = null

@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.remindme.data.Task
+import com.example.remindme.data.Task_table
 import com.example.remindme.ui.viewmodel.TaskViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -42,7 +43,8 @@ fun TaskListScreen(
     )
 {
     val tasks by viewModel.tasks.collectAsState()
-    var editingTask by remember { mutableStateOf<Task?>(null) }
+//    var editingTask by remember { mutableStateOf<Task?>(null) }
+    var editingTask by remember { mutableStateOf<Task_table?>(null) }
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text("All Tasks", style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(bottom = 16.dp))
@@ -91,7 +93,7 @@ fun TaskListScreen(
                         OutlinedTextField(
                             value = editName,
                             onValueChange = { editName = it },
-                            label = { Text("Task Name") },
+                            label = { Text("Task Nasme") },
                             modifier = Modifier.testTag("Task Name")
                         )
                         OutlinedTextField(
@@ -137,7 +139,7 @@ fun TaskListScreen(
 }
 
 @Composable
-fun TaskCard(task: Task, onDelete: (Task) -> Unit, onEdit: (Task) -> Unit) {
+fun TaskCard(task: Task_table, onDelete: (Task_table) -> Unit, onEdit: (Task_table) -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(4.dp)
     ) {

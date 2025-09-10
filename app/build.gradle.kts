@@ -7,9 +7,18 @@ plugins {
     alias(libs.plugins.ksp) // Kotlin Symbol Processing (for annotation processors like Room/Hilt)
 //    jacoco
     id("jacoco")
+    id("app.cash.sqldelight") version "2.1.0"
 }
 jacoco {
     toolVersion = "0.8.13"
+}
+
+sqldelight {
+    databases {
+        create("TaskDatabase") {
+            packageName.set("com.example.remindme.data")
+        }
+    }
 }
 
 android {
@@ -80,6 +89,10 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
 
+    implementation("app.cash.sqldelight:android-driver:2.1.0") // or latest
+    implementation("app.cash.sqldelight:coroutines-extensions:2.1.0")
+
+
     // Hilt Dependency Injection
     implementation(libs.dagger.hilt.android)
     kapt(libs.hilt.android.compiler)
@@ -93,6 +106,7 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation("android.arch.core:core-testing:1.0.0")
+    testImplementation("app.cash.sqldelight:sqlite-driver:2.1.0")
 
     // Testing - Instrumented/Android Tests
     androidTestImplementation(libs.androidx.junit)
