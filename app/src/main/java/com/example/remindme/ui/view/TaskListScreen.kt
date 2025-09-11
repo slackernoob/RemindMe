@@ -41,7 +41,7 @@ fun TaskListScreen(
 //    onGoToOverview: () -> Unit
     )
 {
-    val tasks by viewModel.tasks.collectAsState()
+    val tasks by viewModel.tasks!!.collectAsState()
     var editingTask by remember { mutableStateOf<Task?>(null) }
 
     Column(modifier = Modifier.padding(16.dp)) {

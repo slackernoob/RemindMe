@@ -24,7 +24,7 @@ fun OverviewScreen(
     onGoToList: () -> Unit,
     onGoToMain: () -> Unit
 ) {
-    val tasks by viewModel.tasks.collectAsStateWithLifecycle()
+    val tasks by viewModel.tasks!!.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier.fillMaxSize(),

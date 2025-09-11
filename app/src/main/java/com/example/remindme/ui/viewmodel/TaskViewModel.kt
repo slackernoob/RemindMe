@@ -14,35 +14,43 @@ import javax.inject.Inject
 //class TaskViewModel(private val dao: TaskDao) : ViewModel() {
 @HiltViewModel
 class TaskViewModel @Inject constructor(
-    private val dao: TaskDao
+    private val dao: TaskDao?
 ) : ViewModel() {
-    val tasks = dao.getAllTasks().stateIn(
+    val tasks = dao?.getAllTasks()?.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         emptyList()
     )
 
-    fun addTask(task: Task) {
-        viewModelScope.launch(Dispatchers.IO) {
-            dao.insert(task)
-        }
-    }
-
-//    fun addTask(task: Task?) {
-//        viewModelScope.launch {
+//    fun addTask(task: Task) {
+//        viewModelScope.launch(Dispatchers.IO) {
 //            dao.insert(task)
 //        }
 //    }
 
+    fun addTask(task: Task?) {
+        viewModelScope.launch {
+            if(null != task) {
+                if (dao != null) {
+                    dao.insert(task)
+                } else {
+                    throw NullPointerException("Task is null")
+                }
+            } else {
+                throw NullPointerException("Task is null")
+            }
+        }
+    }
+
     fun deleteTask(task: Task) {
-        viewModelScope.launch(Dispatchers.IO) {
-            dao.delete(task)
+        viewModelScope.launch() {
+            dao?.delete(task)
         }
     }
 
     fun updateTask(updatedTask: Task) {
-        viewModelScope.launch(Dispatchers.IO) {
-            dao.update(updatedTask)
+        viewModelScope.launch() {
+            dao?.update(updatedTask)
         }
     }
 }
