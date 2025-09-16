@@ -13,7 +13,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-            RemindMeApp(navController)
+            ResponsiveContainer{
+                RemindMeApp(navController)
+            }
+
+
         }
     }
 }

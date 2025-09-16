@@ -78,6 +78,8 @@ dependencies {
 
     // Room database
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.compose.material3.window.size.class1)
+    implementation(libs.androidx.compose.adaptive)
     ksp(libs.androidx.room.compiler)
 
     // Hilt Dependency Injection
