@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -37,7 +39,6 @@ import com.example.remindme.ui.viewmodel.TaskViewModel
 fun NewTaskScreen(
     viewModel: TaskViewModel = hiltViewModel(),
     onGoToOverview: () -> Unit,
-//    datePickerState: DatePickerState = rememberDatePickerState()
 ) {
     var datePickerState = rememberDatePickerState()
     var name by remember { mutableStateOf("") }
@@ -46,138 +47,129 @@ fun NewTaskScreen(
     var showDatePicker by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
         Text("Add Task",
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier
-                .padding(bottom = 16.dp)
+                .padding(all = 16.dp)
                 .testTag("Add Task Title")
         )
 
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Task Name")},
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .testTag("Task Name Field")
-        )
-        OutlinedTextField(
-            value = desc,
-            onValueChange = { desc = it },
-            label = { Text("Description (Optional)") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag("Description Field")
-        )
-
-        // Button to select due date
-        Button(
-            onClick = { showDatePicker = true },
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .testTag("Select Due Date Button")
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.Center
         ) {
-            Text("Select Due Date")
-        }
-
-        // Show selected date
-//        datePickerState.selectedDateMillis?.let {
-//            val formatted = SimpleDateFormat("EEE, dd MMM yyyy").format(it)
-//            Text("Due Date: $formatted", style = MaterialTheme.typography.bodyMedium)
-//        }
-
-//        val formattedDate = formatDueDateReadable(datePickerState.selectedDateMillis)
-//        formattedDate?.let {
-//            Text("Due Date: $it", style = MaterialTheme.typography.bodyMedium)
-//        }
-        Text(
-            text = getFormattedDueDateText(datePickerState.selectedDateMillis),
-            style = MaterialTheme.typography.bodyMedium
-        )
 
 
-//        Text(
-//            text = formattedDate?.let { "Due Date: $it" } ?: "No Due Date Selected",
-//            style = MaterialTheme.typography.bodyMedium
-//        )
-
-        // DatePicker Dialog
-        if (showDatePicker) {
-            DatePickerDialog(
-                onDismissRequest = { showDatePicker = false },
-                confirmButton = {
-                    TextButton(onClick = { showDatePicker = false }) {
-                        Text("OK")
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { showDatePicker = false }) {
-                        Text("Cancel")
-                    }
-                },
-                modifier = Modifier.testTag("Date Picker")
-            ) {
-                DatePicker(state = datePickerState)
-            }
-        }
-
-        // Add Task Button
-        Button(
-            modifier = Modifier.testTag("Add Task Button"),
-            onClick = {
-                if (name.isNotBlank()) {
-                    val dateDue = getDueDateWithNullCheck(datePickerState.selectedDateMillis)
-//                    val dateDue = datePickerState.selectedDateMillis ?: -1 // handle -1
-                    val timeDue = getTimeDueWithDateDue(dateDue)
-//                    if (dateDue == -1L) {
-//                        timeDue = -1
-//                    } else {
-//                        timeDue = dateDue - 3_600_000
-//                    }
-                    val task = Task(
-                        name = name,
-                        description = desc,
-                        dateDue = dateDue,
-                        timeDue = timeDue
-                    )
-                    viewModel.addTask(task)
-//                    viewModel.addTask(name, desc, dateDue = due, timeDue = due - 3_600_000) // dummy due in 1 day, reminder in 1 hour
-                    name = ""
-                    desc = ""
-                    datePickerState.selectedDateMillis = null
-                    showDatePicker = false
-                } else {
-                    // show warning for 2 seconds
-                    showWarning = true
-                }
-            },
-        ) {
-            Text("Add Task")
-        }
-
-        if (showWarning) {
-            Text(
-                "Task name cannot be empty",
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 8.dp)
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Task Name")},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("Task Name Field")
+            )
+            OutlinedTextField(
+                value = desc,
+                onValueChange = { desc = it },
+                label = { Text("Description (Optional)") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("Description Field")
             )
 
-            // Auto-hide after 2 seconds
-            LaunchedEffect(Unit) {
-                kotlinx.coroutines.delay(2000)
-                showWarning = false
+            // Button to select due date
+            Button(
+                onClick = { showDatePicker = true },
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .testTag("Select Due Date Button")
+            ) {
+                Text("Select Due Date")
             }
+
+            Text(
+                text = getFormattedDueDateText(datePickerState.selectedDateMillis),
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            // DatePicker Dialog
+            if (showDatePicker) {
+                DatePickerDialog(
+                    onDismissRequest = { showDatePicker = false },
+                    confirmButton = {
+                        TextButton(onClick = { showDatePicker = false }) {
+                            Text("OK")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showDatePicker = false }) {
+                            Text("Cancel")
+                        }
+                    },
+                    modifier = Modifier.testTag("Date Picker")
+                ) {
+                    DatePicker(state = datePickerState)
+                }
+            }
+
+            // Add Task Button
+            Button(
+                modifier = Modifier.testTag("Add Task Button"),
+                onClick = {
+                    if (name.isNotBlank()) {
+                        val dateDue = getDueDateWithNullCheck(datePickerState.selectedDateMillis)
+                        val timeDue = getTimeDueWithDateDue(dateDue)
+                        val task = Task(
+                            name = name,
+                            description = desc,
+                            dateDue = dateDue,
+                            timeDue = timeDue
+                        )
+                        viewModel.addTask(task)
+                        name = ""
+                        desc = ""
+                        datePickerState.selectedDateMillis = null
+                        showDatePicker = false
+                    } else {
+                        // show warning for 2 seconds
+                        showWarning = true
+                    }
+                },
+            ) {
+                Text("Add Task")
+            }
+
+            if (showWarning) {
+                Text(
+                    "Task name cannot be empty",
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+
+                // Auto-hide after 2 seconds
+                LaunchedEffect(Unit) {
+                    kotlinx.coroutines.delay(2000)
+                    showWarning = false
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Button(onClick = onGoToOverview) {
+                Text("Go to Overview")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Button(onClick = onGoToOverview) {
-            Text("Go to Overview")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
     }
+
+
 }
